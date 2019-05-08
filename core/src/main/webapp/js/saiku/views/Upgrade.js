@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-/**
+/**render
  * The global toolbar
  */
 var Upgrade = Backbone.View.extend({
@@ -39,6 +39,7 @@ var Upgrade = Backbone.View.extend({
 	},
 
 	render: function() {
+/*
 
 		var self = this;
 		var license = new License();
@@ -95,6 +96,7 @@ var Upgrade = Backbone.View.extend({
 					return self;
 				}
 		}
+*/
 
 
 

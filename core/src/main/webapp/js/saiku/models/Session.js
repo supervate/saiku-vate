@@ -60,10 +60,10 @@ var Session = Backbone.Model.extend({
             // In this case we inject the proper license attributes
             var ONE_YEAR = 31556952000;
 
-            Settings.LICENSE = {
+/*            Settings.LICENSE = {
               licenseType: 'Orbis',
               expiration: Date.now() + ONE_YEAR
-            }
+            }*/
             
             this.login(authCookie, authCookie);
 		} else {
@@ -133,7 +133,7 @@ var Session = Backbone.Model.extend({
                 Saiku.i18n.locale = this.language;
                 Saiku.i18n.automatic_i18n();
             }
-                var license =new License();
+/*                var license =new License();
 
                 license.fetch_license('api/license/', function(opt) {
                     if (opt.status === 'success') {
@@ -150,7 +150,7 @@ var Session = Backbone.Model.extend({
                         });
                     }
 
-                });
+                });*/
 
 
             this.load_session();
