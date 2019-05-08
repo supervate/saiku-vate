@@ -216,7 +216,7 @@ public class Database {
                     dsm.saveInternalFile("/homes/home:admin/sample_reports", null, null);
                     String exts[] = {"saiku"};
                     Iterator<File> files =
-                        FileUtils.iterateFiles(new File("../../data/sample_reports"), exts, false);
+                        FileUtils.iterateFiles(new File("../webapps/saiku/data/sample_reports"), exts, false);
 
                     while(files.hasNext()){
                         File f = files.next();
