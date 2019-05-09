@@ -55,20 +55,6 @@
             <artifactId>saiku-query</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.saikuanalytics</groupId>
-            <artifactId>saiku-olap-util</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast-wm</artifactId>
             <version>3.6.2</version>
@@ -271,10 +257,6 @@
         </dependency>
     <!--saiku-service-->
     <!--saiku-web-->
-        <dependency>
-            <groupId>org.saikuanalytics</groupId>
-            <artifactId>saiku-service</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -482,10 +464,6 @@
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-cli</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.saikuanalytics</groupId>
-            <artifactId>saiku-web</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
