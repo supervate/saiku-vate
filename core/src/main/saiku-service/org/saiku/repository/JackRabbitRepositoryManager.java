@@ -600,10 +600,10 @@ public class JackRabbitRepositoryManager implements IRepositoryManager {
     Node node = getFolder(s);
     Acl2 acl2 = new Acl2(node);
     acl2.setAdminRoles(userService.getAdminRoles());
-    if ( !acl2.canRead(node, username, roles) ) {
-      //TODO Throw exception
-      throw new RepositoryException();
-    }
+//    if ( !acl2.canRead(node, username, roles) ) {
+//      //TODO Throw exception
+//      throw new RepositoryException();
+//    }
     return getFolder(s).getNodes("jcr:content").nextNode().getProperty("jcr:data").getString();
   }
 

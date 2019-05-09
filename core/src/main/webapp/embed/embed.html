@@ -13,9 +13,9 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="../js/saiku/plugins/CCC_Chart/tipsy.css">
-  <link rel="stylesheet" href="./saiku.css">
-  <link rel="stylesheet" href="../css/saiku/src/saiku.table.css">
-  <style>
+																	   <link rel="stylesheet" href="./saiku.css">
+																												<link rel="stylesheet" href="../css/saiku/src/saiku.table.css">
+																																											  <style>
     body {
       font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
       font-size: 68.75%;
@@ -57,7 +57,7 @@
 
   <script>
     var myClient = new SaikuClient({
-      server: '/saiku', // required
+      server: 'http://10.0.0.8:3334/saiku', // required
       path: '/rest/saiku/embed', // required
       user: 'admin', // required
       password: 'admin', // required
@@ -65,16 +65,16 @@
     });
 
     myClient.execute({
-      file: '/homes/home:admin/report_example_one.saiku', // required
+      file: '/homes/测试.saiku', // required
       htmlObject: '#widget_1', // required
-      render: 'table', // required - table || chart
+      render: 'chart', // required - table || chart
       params: {
         family: 'testparameter'
       }
     });
 
     myClient.execute({
-      file: '/homes/home:admin/report_example_two.saiku',
+      file: '/homes/测试2.saiku',
       htmlObject: '#widget_2',
       render: 'chart',
       mode: 'heatgrid', // chart: line, bar, treemap, ...
