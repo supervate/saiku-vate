@@ -192,7 +192,10 @@
           class="org.saiku.web.rest.resources.BasicRepositoryResource2">
         <property name="sessionService" ref="sessionService"/>
         <property name="datasourceService" ref="datasourceServiceBean"/>
-    </bean>
+        <property name="rqServerUrl" value="${rqServerUrl}"/>
+        <property name="addQueryApi" value="${rqServerApi.addQuery}"/>
+        <property name="deleteQueryApi" value="${rqServerApi.deleteQuery}"/>
+	</bean>
 
 
     <bean id="filterRepositoryBean" scope="session"
