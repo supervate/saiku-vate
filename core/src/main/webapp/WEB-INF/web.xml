@@ -12,15 +12,15 @@
 	</context-param>
 	<context-param>
 		<param-name>db.url</param-name>
-		<param-value>jdbc:h2:../webapps/saiku/data/saiku;MODE=MySQL</param-value>
+		<param-value>jdbc:mysql://gzraqsoft.mynetgear.com:3306/saiku</param-value>
 	</context-param>
 	<context-param>
 		<param-name>db.user</param-name>
-		<param-value>sa</param-value>
+		<param-value>root</param-value>
     </context-param>
     <context-param>
         <param-name>db.password</param-name>
-        <param-value></param-value>
+        <param-value>123456</param-value>
     </context-param>
     <context-param>
         <param-name>db.encryptpassword</param-name>

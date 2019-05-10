@@ -15,8 +15,8 @@ public class FileCopyTask {
     private String targetDir;
 
     public static void main(String[] args) {
-        String sourcePath = "D:/SOFT/Apaches/tomcats/apache-tomcat-9.0.10/webapps/saiku/repository/data";
-        String targetPath = "D:/SOFT/copys";
+        String sourcePath = "D:\\SOFT\\Apaches\\tomcats\\apache-tomcat-9.0.12\\webapps\\saiku\\repository";
+        String targetPath = "C:\\SOFTCACHE\\ideaWorkspace\\rqsaiku\\core\\src\\main\\webapp/repository/";
         try {
             copyDir(sourcePath,targetPath);
         } catch (IOException e) {

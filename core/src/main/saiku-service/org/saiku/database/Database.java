@@ -1,5 +1,6 @@
 package org.saiku.database;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
@@ -63,7 +64,8 @@ public class Database {
     private static final int SIZE = 2048;
 
 
-    private JdbcDataSource ds;
+    private MysqlDataSource ds;
+    private JdbcDataSource h2ds;
     private static final Logger log = LoggerFactory.getLogger(Database.class);
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private IDatasourceManager dsm;
@@ -96,10 +98,18 @@ public class Database {
         String url = servletContext.getInitParameter("db.url");
         String user = servletContext.getInitParameter("db.user");
         String pword = servletContext.getInitParameter("db.password");
-        ds = new JdbcDataSource();
+        ds = new MysqlDataSource();
         ds.setURL(url);
         ds.setUser(user);
         ds.setPassword(pword);
+
+        String h2url = servletContext.getInitParameter("foodmart.url");
+        String h2user = servletContext.getInitParameter("foodmart.user");
+        String h2pword = servletContext.getInitParameter("foodmart.password");
+        h2ds = new JdbcDataSource();
+        h2ds.setURL(h2url);
+        h2ds.setUser(h2user);
+        h2ds.setPassword(h2pword);
     }
 
     private void loadFoodmart() throws SQLException {
@@ -244,7 +254,38 @@ public class Database {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
     }
-    private void loadUsers() throws SQLException {
+
+    //for change the default database ,change h2 to mysql
+    private void loadUsers() throws SQLException{
+        Connection c = ds.getConnection();
+
+        Statement statement = c.createStatement();
+
+        statement.execute(" CREATE TABLE IF NOT EXISTS log ( time  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, log  TEXT); ");
+        statement.execute(" CREATE TABLE IF NOT EXISTS users(user_id INT(11) NOT NULL AUTO_INCREMENT, " + " username VARCHAR(45) NOT NULL UNIQUE, password VARCHAR(100) NOT NULL, email VARCHAR(100), " + " enabled TINYINT NOT NULL DEFAULT 1, PRIMARY KEY(user_id)); ");
+        statement.execute(" CREATE TABLE IF NOT EXISTS user_roles ( " + " user_role_id INT(11) NOT NULL AUTO_INCREMENT,username VARCHAR(45), "  + " user_id INT(11) NOT NULL REFERENCES users(user_id), " + " ROLE VARCHAR(45) NOT NULL, " + " PRIMARY KEY (user_role_id)); ");
+
+        ResultSet result = statement.executeQuery("select count(*) as c from log where log = 'insert users'");
+
+        result.next();
+
+        if (result.getInt("c") == 0) {
+
+            statement.execute("INSERT INTO users (username,password,email, enabled) VALUES ('admin','admin', 'test@admin.com',TRUE);");
+            statement.execute("INSERT INTO users (username,password,enabled) VALUES ('smith','smith', TRUE);");
+            statement.execute("INSERT INTO user_roles (user_id, username, ROLE) VALUES (1, 'admin', 'ROLE_USER');");
+            statement.execute("INSERT INTO user_roles (user_id, username, ROLE) VALUES (1, 'admin', 'ROLE_ADMIN');");
+            statement.execute("INSERT INTO user_roles (user_id, username, ROLE) VALUES (2, 'smith', 'ROLE_USER');");
+            statement.execute("INSERT INTO log (log) VALUES('insert users');");
+        }
+
+        String encrypt = servletContext.getInitParameter("db.encryptpassword");
+        if (encrypt.equals("true") && !checkUpdatedEncyption()) {
+            updateForEncyption();
+        }
+    }
+
+    private void loadUsers_h2() throws SQLException {
 
         Connection c = ds.getConnection();
 
@@ -293,13 +334,41 @@ public class Database {
 
     private boolean checkUpdatedEncyption() throws SQLException{
         Connection c = ds.getConnection();
+        Statement statement = c.createStatement();
+        ResultSet result = statement.executeQuery("select count(*) as c from log where log = 'update passwords'");
+        result.next();
+        return result.getInt("c") != 0;
+    }
+
+    private boolean checkUpdatedEncyption_h2() throws SQLException{
+        Connection c = ds.getConnection();
 
         Statement statement = c.createStatement();
         ResultSet result = statement.executeQuery("select count(*) as c from LOG where log = 'update passwords'");
         result.next();
         return result.getInt("c") != 0;
     }
+
     private void updateForEncyption() throws SQLException {
+        Connection c = ds.getConnection();
+        Statement statement = c.createStatement();
+        statement.execute("ALTER TABLE users MODIFY COLUMN PASSWORD VARCHAR(100) DEFAULT NULL");
+        ResultSet result = statement.executeQuery("select username, password from users");
+        while (result.next()) {
+            statement = c.createStatement();
+            String pword = result.getString("password");
+            String hashedPassword = passwordEncoder.encode(pword);
+            String sql = "UPDATE users " + "SET password = '" + hashedPassword
+                    + "' WHERE username = '" + result.getString("username")
+                    + "'";
+            statement.executeUpdate(sql);
+        }
+        statement = c.createStatement();
+        statement.execute("INSERT INTO log (log) VALUES('update passwords');");
+
+    }
+
+    private void updateForEncyption_h2() throws SQLException {
         Connection c = ds.getConnection();
 
         Statement statement = c.createStatement();

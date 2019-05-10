@@ -567,7 +567,7 @@ public class RepositoryDatasourceManager implements IDatasourceManager, Applicat
     }
 
     public void setDatadir(String datadir) {
-            datadir=datadir.replaceFirst(":", ":/");
+//            datadir=datadir.replaceFirst(":", ":/");
 
         this.datadir = datadir;
     }
