@@ -288,7 +288,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
         switch (option){
             case "add":{
                 HashMap<String, Object> paramMap = new HashMap<>();
-                paramMap.put("username", username);
+                paramMap.put("loginName", username);
                 paramMap.put("content", content);
                 paramMap.put("file", file);
                 String result= HttpUtil.post(rqServerUrl+addQueryApi, paramMap);
