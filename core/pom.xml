@@ -549,5 +549,10 @@
             <artifactId>hazelcast-client</artifactId>
             <version>3.6.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.saikuanalytics</groupId>
+            <artifactId>saiku-service</artifactId>
+            <version>3.17</version>
+        </dependency>
     </dependencies>
 </project>
