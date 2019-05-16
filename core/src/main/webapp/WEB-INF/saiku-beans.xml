@@ -23,6 +23,12 @@
             ignore-unresolvable="true"
             order ="-1" />
 
+	<context:property-placeholder
+		location="/WEB-INF/rqpandaConnectionInfo.properties"
+		ignore-resource-not-found="true"
+		ignore-unresolvable="true"
+		order ="0" />
+
     <bean id="sessionRegistry"
           class="org.springframework.security.core.session.SessionRegistryImpl" />
 
@@ -185,7 +191,12 @@
     <bean id="sessionResource" class="org.saiku.web.rest.resources.SessionResource">
         <property name="sessionService" ref="sessionService"/>
         <property name="userService" ref="userServiceBean"/>
+    </bean>
 
+	<!--这个类主要用于和rapanda交互数据，如果需要加密时使用-->
+    <bean id="EncryptAndDecryptUtil" class="com.vate.EncryptAndDecryptUtil">
+		<!--注意:该秘钥要保持和rapqnda一致-->
+		<property name="encryptKey" value="${encryptKey}"/>
     </bean>
 
     <bean id="repository2bean" scope="request"

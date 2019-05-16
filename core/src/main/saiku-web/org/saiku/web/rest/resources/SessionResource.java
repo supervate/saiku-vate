@@ -15,6 +15,7 @@
  */
 package org.saiku.web.rest.resources;
 
+import com.vate.EncryptAndDecryptUtil;
 import org.saiku.service.ISessionService;
 import org.saiku.service.user.UserService;
 
@@ -47,7 +48,8 @@ public class SessionResource  {
 
 	private ISessionService sessionService;
     private UserService userService;
-
+    private String encryptKey;
+	private EncryptAndDecryptUtil encryptAndDecryptUtil;
   public ISessionService getSessionService() {
 	return sessionService;
   }
@@ -73,10 +75,21 @@ public class SessionResource  {
 	public Response login(
 			@Context HttpServletRequest req,
 			@FormParam("username") String username, 
-			@FormParam("password") String password) 
+			@FormParam("password") String password
+			)
 	{
 		try {
-		  sessionService.login(req, username, password);
+			//FIXMe by vate
+			//自定义的字段，里面包含用户名和密码信息
+			String accessToken = req.getParameter("actk");
+			if (StringUtils.isNotBlank(accessToken)){
+				//解析出username 和 密码
+				String actkInfo = encryptAndDecryptUtil.decryptContentForRqpanda(accessToken);
+				String[] usernameAndPwd = actkInfo.split(",");
+				sessionService.login(req, usernameAndPwd[0], usernameAndPwd[1]);
+			}else {
+				sessionService.login(req, username, password);
+			}
 		  return Response.ok().build();
 		}
 		catch (Exception e) {
@@ -169,6 +182,4 @@ public class SessionResource  {
 		return Response.ok().build();
 
 	}
-
-
 }

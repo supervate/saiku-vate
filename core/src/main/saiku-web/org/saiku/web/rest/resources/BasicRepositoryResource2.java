@@ -46,10 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -291,7 +288,8 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                 paramMap.put("loginName", username);
 //                paramMap.put("content", content);
                 paramMap.put("file", file);
-                String result= HttpUtil.post(rqServerUrl+addQueryApi, paramMap);
+                paramMap.put("timestamp", new Date().getTime());
+                String result= HttpUtil.post(rqServerUrl+addQueryApi+"?_="+new Date().getTime(), paramMap);
                 JSONObject resultObj = JSONUtil.parseObj(result);
                 int code = resultObj.getInt("code");
                 if (code == 0){
