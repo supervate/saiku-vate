@@ -26,7 +26,6 @@ var WorkspaceToolbar = Backbone.View.extend({
     initialize: function(args) {
         // Keep track of parent workspace
         this.workspace = args.workspace;
-
         // Maintain `this` in callbacks
         _.bindAll(this, "call", "reflect_properties", "run_query",
             "swap_axes_on_dropzones", "display_drillthrough","clicked_cell_drillthrough_export",
@@ -137,8 +136,10 @@ var WorkspaceToolbar = Backbone.View.extend({
         $(this.el).find(".spark_bar, .spark_line").removeClass('on');
         $(this.el).find('a.edit').removeClass('disabled_toolbar');
 
+        //modify by vate 这个地方 如果是view模式的话 会做一些按钮的隐藏
         if (Settings.MODE == 'VIEW' || this.workspace.isReadOnly) {
-            $(this.el).find('a.edit').hide();
+			$(this.el).find('a.open').hide();
+			$(this.el).find('a.edit').hide();
             $(this.el).find('a.save').hide();
         } else {
             if (this.workspace.viewState == 'view') {

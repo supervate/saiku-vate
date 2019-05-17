@@ -15,6 +15,7 @@
  */
 package org.saiku.web.rest.resources;
 
+import com.sun.jersey.api.spring.Autowire;
 import com.vate.EncryptAndDecryptUtil;
 import org.saiku.service.ISessionService;
 import org.saiku.service.user.UserService;
@@ -24,6 +25,7 @@ import com.qmino.miredot.annotations.ReturnType;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -75,18 +77,23 @@ public class SessionResource  {
 	public Response login(
 			@Context HttpServletRequest req,
 			@FormParam("username") String username, 
-			@FormParam("password") String password
+			@FormParam("password") String password,
+			@FormParam("actk") String actk
 			)
 	{
 		try {
-			//FIXMe by vate
+			//by vate
 			//自定义的字段，里面包含用户名和密码信息
-			String accessToken = req.getParameter("actk");
-			if (StringUtils.isNotBlank(accessToken)){
-				//解析出username 和 密码
-				String actkInfo = encryptAndDecryptUtil.decryptContentForRqpanda(accessToken);
+			if (StringUtils.isNotBlank(actk)){
+				//解析出username 和 pwd
+				String actkInfo = encryptAndDecryptUtil.decryptContentForRqpanda(actk);
 				String[] usernameAndPwd = actkInfo.split(",");
-				sessionService.login(req, usernameAndPwd[0], usernameAndPwd[1]);
+				if (usernameAndPwd.length >= 2) {
+					sessionService.login(req, usernameAndPwd[0], usernameAndPwd[1]);
+				}
+				else {
+					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("actk参数内容有误！登录失败！").build();
+				}
 			}else {
 				sessionService.login(req, username, password);
 			}
@@ -181,5 +188,13 @@ public class SessionResource  {
 
 		return Response.ok().build();
 
+	}
+
+	public EncryptAndDecryptUtil getEncryptAndDecryptUtil() {
+		return encryptAndDecryptUtil;
+	}
+
+	public void setEncryptAndDecryptUtil(EncryptAndDecryptUtil encryptAndDecryptUtil) {
+		this.encryptAndDecryptUtil = encryptAndDecryptUtil;
 	}
 }

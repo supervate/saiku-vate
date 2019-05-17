@@ -140,6 +140,7 @@
         <property name="olapDiscoverService" ref="olapDiscoverServiceBean"/>
         <property name="repositoryDatasourceManager" ref="repositoryDsManager"/>
         <property name="logExtractor" ref="logwriterbean"/>
+        <property name="encryptAndDecryptUtil" ref="EncryptAndDecryptUtil"/>
     </bean>
 
     <bean id="olapDiscoverServiceBean" class="org.saiku.service.olap.OlapDiscoverService">
@@ -191,6 +192,7 @@
     <bean id="sessionResource" class="org.saiku.web.rest.resources.SessionResource">
         <property name="sessionService" ref="sessionService"/>
         <property name="userService" ref="userServiceBean"/>
+		<property name="encryptAndDecryptUtil" ref="EncryptAndDecryptUtil"/>
     </bean>
 
 	<!--这个类主要用于和rapanda交互数据，如果需要加密时使用-->

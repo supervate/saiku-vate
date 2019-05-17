@@ -113,7 +113,6 @@ function recursive_menu_translate(object, po_file) {
 			element = $(this);
 			// Translate text
             if(element.html === undefined && element.attr('title') === undefined && element.attr('value') === undefined) {
-                debugger;
             }
 			if (element.html()) {
 				translated_text = translate( element.html(), po_file );

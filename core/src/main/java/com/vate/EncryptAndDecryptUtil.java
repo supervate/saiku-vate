@@ -20,7 +20,7 @@ public class EncryptAndDecryptUtil {
      * @return
      */
     public String encryptContentForRqpanda(String content){
-        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.DESede,getKey());
+        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.AES,getKey());
         return des.encryptHex(content);
     }
 
@@ -30,7 +30,7 @@ public class EncryptAndDecryptUtil {
      * @return
      */
     public String decryptContentForRqpanda(String content){
-        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.DESede,getKey());
+        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.AES,getKey());
         return des.decryptStr(content);
     }
 
@@ -43,7 +43,7 @@ public class EncryptAndDecryptUtil {
                 e.printStackTrace();
             }
         }else {
-            throw new NullPointerException("获取加密秘钥失败！秘钥字符串为null!");
+            throw new NullPointerException("获取加密秘钥失败！秘钥字符串为Null!");
         }
         return key;
     }

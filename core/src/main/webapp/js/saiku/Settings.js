@@ -29,9 +29,9 @@ $.ajax({
 });
 
 Settings.BASE_URL = window.location.origin;
-
 /**
  * Extend settings with query parameters
+ * 根据url参数填充相关参数数据到Settings
  */
 Settings.GET = function () {
     var qs = document.location.search;

@@ -22,12 +22,14 @@
  */
 var Session = Backbone.Model.extend({
     username: null,
+    actk: null,
     password: null,
     sessionid: null,
     upgradeTimeout: null,
     isAdmin: Settings.ORBIS_AUTH.hazelcast_enabled,
     id: null,
 	atemptedToLoginByCookie: false,
+	//初始化函数
     initialize: function(args, options) {
         // Attach a custom event bus to this model
         _.extend(this, Backbone.Events);
@@ -41,8 +43,13 @@ var Session = Backbone.Model.extend({
             } else {
                 this.check_session();
             }
-
-        } else {
+        }
+        else if(options && options.actk) {
+        	this.actk = options.actk;
+        	//FIXME 在这里添加登录逻辑
+			this.save({actk:this.actk},{success: this.check_session, error: this.check_session});
+		}
+        else {
             this.check_session();
         }
     },
@@ -163,7 +170,7 @@ var Session = Backbone.Model.extend({
         $(this.form.el).dialog('open');
     },
 
-    login: function(username, password) {
+    login: function(username, password,actk) {
         var that = this;
         this.save({username:username, password:password},{dataType: "text", success: this.check_session, error: function(model, response){
             that.login_failed(response.responseText);
@@ -207,5 +214,17 @@ var Session = Backbone.Model.extend({
     url: function() {
 
         return "session";
-    }
+    },
 });
+//FIXME by vate
+function resoulverActk(){
+	jQuery.ajax({
+		async: false,
+		type: 'GET',
+		url: Settings.REST_URL+"/resloverActk",
+		data: null,
+		success: function(data) {
+
+		}
+	});
+}

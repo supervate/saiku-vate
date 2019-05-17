@@ -15,6 +15,13 @@
  */
 package org.saiku.web.rest.resources;
 
+import clover.org.jfree.chart.LegendItemSource;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.vate.EncryptAndDecryptUtil;
+import org.apache.commons.lang.StringUtils;
 import org.saiku.database.dto.MondrianSchema;
 import org.saiku.database.dto.SaikuUser;
 import org.saiku.datasources.datasource.SaikuDatasource;
@@ -38,9 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 import javax.ws.rs.*;
@@ -61,6 +66,10 @@ public class AdminResource {
     private static final Logger log = LoggerFactory.getLogger(DataSourceResource.class);
     private OlapDiscoverService olapDiscoverService;
     private LogExtractor logExtractor;
+    private EncryptAndDecryptUtil encryptAndDecryptUtil;
+
+    private static final String accessAccount = "rqpanda";
+    private static final String accessPwd = "eLXZYVEg292bgbD6";
 
     public LogExtractor getLogExtractor() {
         return logExtractor;
@@ -337,12 +346,27 @@ public class AdminResource {
     @Produces( {"application/json"})
     @Path("/users")
     @ReturnType("java.util.List<SaikuUser>")
-    public Response getExistingUsers() {
-        if(!userService.isAdmin()){
+    public Response getExistingUsers(@QueryParam("actk") String actk) {
+        if(!userService.isAdmin() && !isAccessAble(actk)){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.ok().entity(userService.getUsers()).build();
+    }
 
+    /**
+     * Get existing Saiku users from the Saiku server.
+     * @summary Get Saiku users.
+     * @return A list of available users.
+     */
+    @POST
+    @Produces( {"application/json"})
+    @Path("/allUsers")
+    @ReturnType("java.util.List<SaikuUser>")
+    public Response getExistingUsersPost(@FormParam("actk") String actk) {
+        if(!userService.isAdmin() && !isAccessAble(actk)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return Response.ok().entity(userService.getUsers()).build();
     }
 
     /**
@@ -452,8 +476,8 @@ public class AdminResource {
     @Produces( {"application/json"})
     @Path("/users/{id}")
     @ReturnType("org.saiku.database.dto.SaikuUser")
-    public Response getUserDetails(@PathParam("id") int id) {
-        if(!userService.isAdmin()){
+    public Response getUserDetails(@PathParam("id") int id,@QueryParam("actk") String actk) {
+        if(!userService.isAdmin() && !isAccessAble(actk)){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.ok().entity(userService.getUser(id)).build();
@@ -471,8 +495,8 @@ public class AdminResource {
     @Consumes("application/json")
     @Path("/users/{username}")
     @ReturnType("org.saiku.database.dto.SaikuUser")
-    public Response updateUserDetails(SaikuUser jsonString, @PathParam("username") String userName) {
-        if(!userService.isAdmin()){
+    public Response updateUserDetails(SaikuUser jsonString, @PathParam("username") String userName,@FormParam("actk") String actk) {
+        if(!userService.isAdmin() && !isAccessAble(actk)){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         if(jsonString.getPassword() == null || jsonString.getPassword().equals("")) {
@@ -490,16 +514,135 @@ public class AdminResource {
      * @return A response containing the user object.
      */
     @POST
-    @Produces( {"application/json"})
-    @Consumes( {"application/json"})
+    @Consumes("application/x-www-form-urlencoded")
     @Path("/users")
     @ReturnType("org.saiku.database.dto.SaikuUser")
-    public Response createUserDetails(SaikuUser jsonString) {
+    public Response createUserDetails(SaikuUser jsonString,@FormParam("actk") String actk) {
 
-        if(!userService.isAdmin()){
+        if(!userService.isAdmin() && !isAccessAble(actk)){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.ok().entity(userService.addUser(jsonString)).build();
+    }
+
+    /**
+     * by vate
+     * 批量添加用户接口
+     * @summary Create user details
+     * @param usersJsonStr SaikuUser object
+     * @return 返回添加失败的用户名列表
+     */
+    @POST
+    @Consumes("application/x-www-form-urlencoded")
+    @Path("/addUsers")
+    @ReturnType("java.lang.String")
+    public Response addUsers(@FormParam("usersJsonStr") String usersJsonStr,@FormParam("actk") String actk) {
+
+        if(!userService.isAdmin() && !isAccessAble(actk)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        List<String> errUserNames = new ArrayList<>();
+        JSONArray users = JSONUtil.parseArray(usersJsonStr);
+        if (users != null && !users.isEmpty()){
+            for (int i = 0; i < users.size(); i++) {
+                JSONObject userObj = users.getJSONObject(i);
+                SaikuUser user = new SaikuUser();
+                user.setEmail("x@x.com");
+                String[] roles = {"ROLE_USER"};
+                if (userObj.getJSONArray("roles") != null){
+                    JSONArray roleArr = userObj.getJSONArray("roles");
+                    user.setRoles(roleArr.toArray(new String[roleArr.size()]));
+                }else {
+                    user.setRoles(roles);
+                }
+                user.setPassword(userObj.getStr("password"));
+                user.setUsername(userObj.getStr("username"));
+                SaikuUser storedUser = userService.addUser(user);
+                if(storedUser.getId() == 0){
+                    errUserNames.add(user.getUsername());
+                }
+            }
+        }
+        return Response.ok(errUserNames).build();
+    }
+
+    /**
+     * by vate
+     * 批量更新用户接口
+     * 注意：每个用户都需要带上id
+     * @summary Create user details
+     * @param usersJsonStr SaikuUser object
+     * @return 返回更新失败的用户名列表
+     */
+    @POST
+    @Consumes("application/x-www-form-urlencoded")
+    @Path("/updateUsers")
+    @ReturnType("java.lang.String")
+    public Response updateUserDetails(@FormParam("usersJsonStr") String usersJsonStr,@FormParam("actk") String actk) {
+        if(!userService.isAdmin() && !isAccessAble(actk)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        List<String> errUserNames = new ArrayList<>();
+        JSONArray users = JSONUtil.parseArray(usersJsonStr);
+        List<SaikuUser> allUsers = userService.getUsers();
+        Map<String,SaikuUser> allUserMap = new HashMap<>();
+        if (allUsers !=null && !allUserMap.isEmpty())
+        for (SaikuUser user : allUsers) {
+            allUserMap.put(user.getUsername(),user);
+        }
+        if (users != null && !users.isEmpty()){
+            for (int i = 0; i < users.size(); i++) {
+                boolean updatePassword = false;
+                JSONObject userObj = users.getJSONObject(i);
+                String username = userObj.getStr("username");
+                //用户名未传，忽略
+                if (StringUtils.isBlank(username)) continue;
+                if (allUserMap.get(username) == null){
+                    //如果Saiku不包含该用户名，加入更新错误列表
+                    errUserNames.add(username);
+                }
+                SaikuUser user = new SaikuUser();
+                user.setId(allUserMap.get(username).getId());
+                if (userObj.getJSONArray("roles") != null){
+                    JSONArray roleArr = userObj.getJSONArray("roles");
+                    user.setRoles(roleArr.toArray(new String[roleArr.size()]));
+                }
+                if (userObj.getStr("username") != null){
+                    user.setPassword(userObj.getStr("username"));
+                }
+                if (userObj.getStr("password") != null) {
+                    user.setUsername(userObj.getStr("password"));
+                    updatePassword = true;
+                }
+                SaikuUser updatedUser = userService.updateUser(user,updatePassword);
+            }
+        }
+        return Response.ok(errUserNames).build();
+    }
+
+    /**
+     * by vate
+     * 批量删除用户接口
+     * @summary Create user details
+     * @param userNames SaikuUser object
+     * @return 反正就是成功。。。
+     */
+    @POST
+    @Consumes("application/x-www-form-urlencoded")
+    @Path("/delUsers")
+    @ReturnType("java.lang.String")
+    public Response removeUsers(@FormParam("userNames") String userNames,@FormParam("actk") String actk) {
+
+        if(!userService.isAdmin() && !isAccessAble(actk)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        String[] userNameArr = userNames.split(",");
+        if (userNameArr != null && userNameArr.length >0){
+            for (int i = 0; i < userNameArr.length; i++) {
+                userService.removeUser(userNameArr[i]);
+            }
+        }
+        return Response.ok().build();
     }
 
     /**
@@ -511,8 +654,8 @@ public class AdminResource {
     @DELETE
     @Produces( {"application/json"})
     @Path("/users/{username}")
-    public Response removeUser(@PathParam("username") String username) {
-        if(!userService.isAdmin()){
+    public Response removeUser(@PathParam("username") String username,@FormParam("actk") String actk) {
+        if(!userService.isAdmin() && !isAccessAble(actk)){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         userService.removeUser(username);
@@ -684,5 +827,33 @@ public class AdminResource {
 
         return Response.ok(list).build();
 
+    }
+
+    public boolean isAccessAble(String actk) {
+        //by vate
+        //自定义的字段，里面包含用户名和密码信息
+        if (StringUtils.isNotBlank(actk)) {
+            //解析出username 和 pwd
+            String actkInfo = encryptAndDecryptUtil.decryptContentForRqpanda(actk);
+            String[] usernameAndPwd = actkInfo.split(",");
+            if (usernameAndPwd.length >= 2) {
+                String userName = usernameAndPwd[0];
+                String pwd = usernameAndPwd[1];
+                if (accessAccount.equals(userName) && accessPwd.equals(pwd)){
+                    return true;
+                }
+            } else {
+                log.error("actk参数内容有误！解析失败！");
+            }
+        }
+        return false;
+    }
+
+    public EncryptAndDecryptUtil getEncryptAndDecryptUtil() {
+        return encryptAndDecryptUtil;
+    }
+
+    public void setEncryptAndDecryptUtil(EncryptAndDecryptUtil encryptAndDecryptUtil) {
+        this.encryptAndDecryptUtil = encryptAndDecryptUtil;
     }
 }

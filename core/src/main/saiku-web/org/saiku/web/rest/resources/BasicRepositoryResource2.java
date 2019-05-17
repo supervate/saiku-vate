@@ -110,7 +110,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
 
     public void setRqServerUrl(String rqServerUrl) {
         if (rqServerUrl.endsWith("/")){
-            this.rqServerUrl = rqServerUrl.substring(0,rqServerUrl.length()-2);
+            this.rqServerUrl = rqServerUrl.substring(0,rqServerUrl.length()-1);
         }
         this.rqServerUrl = rqServerUrl;
     }
