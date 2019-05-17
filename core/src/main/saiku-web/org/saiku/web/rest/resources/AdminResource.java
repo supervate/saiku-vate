@@ -586,9 +586,10 @@ public class AdminResource {
         JSONArray users = JSONUtil.parseArray(usersJsonStr);
         List<SaikuUser> allUsers = userService.getUsers();
         Map<String,SaikuUser> allUserMap = new HashMap<>();
-        if (allUsers !=null && !allUserMap.isEmpty())
-        for (SaikuUser user : allUsers) {
-            allUserMap.put(user.getUsername(),user);
+        if (allUsers !=null && !allUsers.isEmpty()){
+            for (SaikuUser user : allUsers) {
+                allUserMap.put(user.getUsername(),user);
+            }
         }
         if (users != null && !users.isEmpty()){
             for (int i = 0; i < users.size(); i++) {
@@ -600,6 +601,7 @@ public class AdminResource {
                 if (allUserMap.get(username) == null){
                     //如果Saiku不包含该用户名，加入更新错误列表
                     errUserNames.add(username);
+                    continue;
                 }
                 SaikuUser user = new SaikuUser();
                 user.setId(allUserMap.get(username).getId());
@@ -608,10 +610,10 @@ public class AdminResource {
                     user.setRoles(roleArr.toArray(new String[roleArr.size()]));
                 }
                 if (userObj.getStr("username") != null){
-                    user.setPassword(userObj.getStr("username"));
+                    user.setUsername(userObj.getStr("username"));
                 }
                 if (userObj.getStr("password") != null) {
-                    user.setUsername(userObj.getStr("password"));
+                    user.setPassword(userObj.getStr("password"));
                     updatePassword = true;
                 }
                 SaikuUser updatedUser = userService.updateUser(user,updatePassword);
