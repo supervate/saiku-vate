@@ -96,10 +96,10 @@ public class UserService implements IUserManager, Serializable {
         uDAO.deleteRole(u);
     }
 
-    public void removeUser(String username) {
-        SaikuUser u = getUser(Integer.parseInt(username));
+    public void removeUser(String userId) {
+        SaikuUser u = getUser(Integer.parseInt(userId));
 
-        uDAO.deleteUser(username);
+        uDAO.deleteUser(userId);
 
         iDatasourceManager.deleteFolder("homes/" + u.getUsername());
 

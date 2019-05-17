@@ -639,9 +639,24 @@ public class AdminResource {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         String[] userNameArr = userNames.split(",");
+        Set delUserNameSet = new HashSet();
         if (userNameArr != null && userNameArr.length >0){
             for (int i = 0; i < userNameArr.length; i++) {
-                userService.removeUser(userNameArr[i]);
+                delUserNameSet.add(userNameArr[i]);
+            }
+        }
+        List<Integer> deleteUserIds = new ArrayList<>();
+        List<SaikuUser> allUsers = userService.getUsers();
+        if (allUsers != null && !allUsers.isEmpty()){
+            for (int i = 0; i < allUsers.size(); i++) {
+                if (delUserNameSet.contains(allUsers.get(i).getUsername())){
+                    deleteUserIds.add(allUsers.get(i).getId());
+                }
+            }
+        }
+        if (deleteUserIds != null && deleteUserIds.size() >0){
+            for (int i = 0; i < deleteUserIds.size(); i++) {
+                userService.removeUser(deleteUserIds.get(i)+"");
             }
         }
         return Response.ok().build();
