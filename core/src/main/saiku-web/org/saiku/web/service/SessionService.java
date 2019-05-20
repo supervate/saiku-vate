@@ -216,7 +216,7 @@ public class SessionService implements ISessionService {
             log.debug("Logging in with [{}]", authentication.getPrincipal());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (BadCredentialsException bd) {
-            throw new RuntimeException("Authentication failed for: " + username, bd);
+            throw new RuntimeException("登录失败(账号不存在或密码错误)，账号为: " + username, bd);
         }
 
     }

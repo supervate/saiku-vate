@@ -557,9 +557,13 @@ public class AdminResource {
                 }
                 user.setPassword(userObj.getStr("password"));
                 user.setUsername(userObj.getStr("username"));
-                SaikuUser storedUser = userService.addUser(user);
-                if(storedUser.getId() == 0){
+
+                try {
+                    userService.addUser(user);
+                }
+                catch (Throwable e){
                     errUserNames.add(user.getUsername());
+                    log.error("用户添加失败！",e);
                 }
             }
         }
