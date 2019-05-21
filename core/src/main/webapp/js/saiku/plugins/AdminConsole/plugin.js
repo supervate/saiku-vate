@@ -254,15 +254,17 @@ var AdminConsole = Backbone.View.extend({
 
             "<div class='sidebar_inner'>" +
             "<a class='back_query' href='#back_query' style='display:none'></a>" +
-            "    <ul id='queries' class='RepositoryObjects'>" +
-            "<% if(Settings.SHOW_USER_MANAGEMENT) { %>"+
+            "    <ul id='queries' class='RepositoryObjects'>"+
+			/*fixme by vate*/
+			/*把用户管理的这一块给禁止了*/
+            /*"<% if(Settings.SHOW_USER_MANAGEMENT) { %>"+
             "<li><strong>User Management</strong>" +
             "<ul class='inner_users'><li class='create_user'>Add User</li></ul></li>" +
-            "<% } %>"+
-            "<li><strong>Data Source Management</strong></li>" +
-            "<ul class='dslist'><strong>Data Sources</strong>"+
+            "<% } %>"+*/
+            "<li><strong>数据源管理</strong></li>" +
+            "<ul class='dslist'><strong>数据源列表</strong>"+
             "<ul class='inner_datasource'><li class='create_datasource'>Add Data Source</li></ul></ul>" +
-            "<ul class='dslist'><strong>Schema</strong>"+
+            "<ul class='dslist'><strong>'多维定义'列表</strong>"+
             "<ul class='inner_schema'><li class='create_schema'>Add Schema</li></ul></ul>" +
             "<li class='license_container'><strong>License</strong>" +
             "<ul><li class='license_info'>Information</li>" +
@@ -1098,12 +1100,10 @@ var AdminConsole = Backbone.View.extend({
 
 });
 Saiku.events.bind('admin:loaddatasources', function(admin){
-    $(admin.admin.el).find('.inner_datasource').append("<li class='i18n create_datasource'>Add Data Source</li>");
-
+    $(admin.admin.el).find('.inner_datasource').append("<li class='i18n create_datasource'><strong>添加数据源</strong></li>");
 });
 Saiku.events.bind('admin:loadschema', function(admin){
-    $(admin.admin.el).find('.inner_schema').append("<li class='i18n create_schema'>Add Schema</li>");
-
+    $(admin.admin.el).find('.inner_schema').append("<li class='i18n create_schema'><strong>添加'多维定义'</strong></li>");
 });
 Saiku.events.bind('session:new', function (session) {
 if(Saiku.session.isAdmin) {
@@ -1268,6 +1268,8 @@ var Schemas = Backbone.Collection.extend({
         if (this.dialog) {
             this.dialog.populateschema(response);
         }
+        //翻译一遍。。。
+        Saiku.i18n.translate();
         return response;
     }
 })
@@ -1293,7 +1295,10 @@ var Connections = Backbone.Collection.extend({
         if (this.dialog) {
             this.dialog.populate2(response);
         }
-        return response;
+		//翻译一遍。。。
+		debugger
+		Saiku.i18n.translate();
+		return response;
     },
     refresh: function(){
         $.ajax({

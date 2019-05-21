@@ -282,9 +282,24 @@ var SessionWorkspace = Backbone.Model.extend({
             }
             else {
                 // Saiku.splash.render();
+				//paramsURI就很厉害了 保存了所有地址栏中的参数
                 if (!Settings.INITIAL_QUERY && paramsURI.splash) {
-                    Saiku.tabs.add(new SplashScreen());
-                }
+					//fixme by vate 这个地方就是加载首页的地方 原来是home 被我删掉了 改成新建查询
+					//其他几个地方也有一样的逻辑 暂时没搞懂是干嘛的
+					// Saiku.tabs.add(new SplashScreen());
+					//如果设置了该参数 且为管理员 则打开数据源管理
+					if (paramsURI.isDataSource == true && Saiku.session.isAdmin){
+						Saiku.AdminConsole.show_admin();
+						Saiku.toolbar.hideToolBar();
+						Saiku.tabs.hideTabBar();
+					}
+					else {
+						//隐藏工具栏
+						Saiku.toolbar.hideToolBar();
+						//否则新建一个普通的查询给他
+						Saiku.tabs.add(new Workspace());
+					}
+				}
                 else if(!Settings.INITIAL_QUERY) {
                     Saiku.tabs.add(new Workspace());
                 }

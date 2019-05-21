@@ -9,7 +9,7 @@
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Saiku - Next Generation Open Source Analytics</title>
+    <title>自助分析器</title>
 
     <!--[if lt IE 9]><script type="text/javascript" src="js/svgweb/svg.js" data-path="js/svgweb/"></script><![endif]-->
     <meta name="svg.render.forceflash" content="true">
@@ -254,19 +254,18 @@
                     <li class='separator'>&nbsp;</li>
                     <li><a id='open_query' href='#open_query' title='Open query' class='open_query i18n sprite'></a></li>
                     <% if (!data.buttons) { %>
-                    <li class='separator'>&nbsp;</li>
-                    <li><a id='logout' href='#logout' title='Logout' class='logout i18n sprite'></a></li>
+<!--                    <li class='separator'>&nbsp;</li>-->
+<!--                    <li><a id='logout' href='#logout' title='Logout' class='logout i18n sprite'></a></li>-->
 
-                    <li class='separator'>&nbsp;</li>
-                    <li><a id='about' href='#about' title='About' class='about i18n sprite'></a></li>
-                    <li class='separator'>&nbsp;</li>
-                    <li><a id='help_icon' href='#help' target='_blank' title='Help' class='help i18n sprite'></a></li>
+<!--                    <li class='separator'>&nbsp;</li>-->
+<!--                    <li><a id='about' href='#about' title='About' class='about i18n sprite'></a></li>-->
+<!--                    <li class='separator'>&nbsp;</li>-->
+<!--                    <li><a id='help_icon' href='#help' target='_blank' title='Help' class='help i18n sprite'></a></li>-->
 
                     <li class='separator'>&nbsp;</li>
                     <% } %>
 <!--                    <li><a id='issue_tracker' href='#issue_tracker' title='Issue Tracker' class='bug i18n sprite'></a></li>-->
             </ul>
-
             <%= data.logo %>
         </script>
 
@@ -595,6 +594,9 @@ title="Drill across on cell"></a></li>
                 class="i18n about button sprite"
                 title="About"></a></li>
              <% } %>
+             <li class="seperator"><a href="#open_reps" id="reps_icon"
+                class="reps button sprite"
+                title="查询方案列表"></a></li>
         </ul>
 
         </script>

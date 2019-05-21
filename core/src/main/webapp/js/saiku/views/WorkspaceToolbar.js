@@ -16,6 +16,13 @@
 
 /**
  * The workspace toolbar, and associated actions
+ *
+ * 关于给工作台 添加按钮的步骤 :
+ * 	1. 在index.html界面 template-workspace-toolbar 元素里面 加个按钮上去 (或者你自己js动态添加)
+ * 	2. 按钮<a>标签的 href="#myxxxx" 一定要设置 myxxxx 很重要
+ * 	3. 在下方的 bindAll中 添加 "myxxxx"
+ * 	4. 在WorkspaceToolbar对象里 加入一个函数对象 名称为 myxxxx
+ * 	注意: (myxxxx随意设置)
  */
 var WorkspaceToolbar = Backbone.View.extend({
     enabled: false,
@@ -27,7 +34,7 @@ var WorkspaceToolbar = Backbone.View.extend({
         // Keep track of parent workspace
         this.workspace = args.workspace;
         // Maintain `this` in callbacks
-        _.bindAll(this, "call", "reflect_properties", "run_query",
+        _.bindAll(this, "call", "reflect_properties", "run_query","open_reps",
             "swap_axes_on_dropzones", "display_drillthrough","clicked_cell_drillthrough_export",
 			"clicked_cell_drillacross","clicked_cell_drillthrough","activate_buttons", "switch_to_mdx","post_mdx_transform", "toggle_fields_action", "group_parents");
         this.workspace.bind('workspace:toolbar:render', this.translate);
@@ -136,11 +143,12 @@ var WorkspaceToolbar = Backbone.View.extend({
         $(this.el).find(".spark_bar, .spark_line").removeClass('on');
         $(this.el).find('a.edit').removeClass('disabled_toolbar');
 
-        //modify by vate 这个地方 如果是view模式的话 会做一些按钮的隐藏
+        //fixme by vate 这个地方 如果是view模式的话 会做一些按钮的隐藏
         if (Settings.MODE == 'VIEW' || this.workspace.isReadOnly) {
 			$(this.el).find('a.open').hide();
 			$(this.el).find('a.edit').hide();
             $(this.el).find('a.save').hide();
+            $(this.el).find('a.reps').hide();
         } else {
             if (this.workspace.viewState == 'view') {
                 $(this.el).find('a.edit').removeClass('on');
@@ -169,6 +177,10 @@ var WorkspaceToolbar = Backbone.View.extend({
         } else {
             this.workspace.switch_view_state('view');
         }
+    },
+	/*fixme by vate 打开查询方案仓库逻辑*/
+	open_reps: function(event) {
+		Saiku.toolbar.open_query();
     },
 
     save_query: function(event) {

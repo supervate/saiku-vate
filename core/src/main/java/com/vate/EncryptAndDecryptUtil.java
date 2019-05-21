@@ -9,6 +9,9 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -28,7 +31,11 @@ public class EncryptAndDecryptUtil {
      */
     public String encryptContentForRqpanda(String content){
 //        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.AES,getKey());
-        return encrypt(content,encryptKey);
+        try {
+            return URLEncoder.encode(encrypt(content,encryptKey),"utf8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 
     /**
@@ -38,7 +45,11 @@ public class EncryptAndDecryptUtil {
      */
     public String decryptContentForRqpanda(String content){
 //        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.AES,getKey());
-        return decrypt(content,encryptKey);
+        try {
+            return URLDecoder.decode(decrypt(content,encryptKey),"utf8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 
         /**

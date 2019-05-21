@@ -103,8 +103,8 @@ Backbone.sync = function(method, model, options) {
 
     var failure = function(jqXHR, textStatus, errorThrown) {
       if (!isIE && typeof console != "undefined" && console && console.error) {
-        console.error("Error performing " + type + " on " + url);
-        console.error(errorThrown);
+        // console.error("Error performing " + type + " on " + url);
+        // console.error(errorThrown);
       }
       if (options.error) {
         options.error(jqXHR, textStatus, errorThrown);

@@ -1836,6 +1836,12 @@ a.disabled_toolbar:hover {
   background-position: 7px 7px;
 }
 
+/*fixme by vate 工作台界面，打开仓库按钮的图标*/
+.workspace_toolbar .reps {
+	background-image: url('../../../images/src/reps.png');
+	background-position: 7px 7px;
+}
+
 /* Query Toolbar */
 
 .query_toolbar_vertical {

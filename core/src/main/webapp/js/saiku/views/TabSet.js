@@ -27,7 +27,11 @@ var TabSet = Backbone.View.extend({
 		this.pager = new TabPager({ tabset: this });
 		return this;
 	},
-
+	/*fixme by vate
+	*  隐藏掉页面的tabs栏*/
+	hideTabBar: function(){
+		$("#header .tabs").hide();
+	},
 	/**
 	 * Add a tab to the collection
 	 * @param tab

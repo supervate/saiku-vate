@@ -302,7 +302,9 @@ Saiku.events.bind('session:new', function() {
             .click(Saiku.i18n.improve_translation)
             .addClass('sprite translate i18n');
         var $li = $("<li />").append($link);
-        $(Saiku.toolbar.el).find('ul').append($li).append('<li class="separator">&nbsp;</li>');
+        //fixme by vate
+		// 禁止帮助翻译按钮
+        // $(Saiku.toolbar.el).find('ul').append($li).append('<li class="separator">&nbsp;</li>');
     }
 
 });

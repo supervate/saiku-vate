@@ -27,12 +27,12 @@ var Workspace = Backbone.View.extend({
         'drop .workspace_results': 'remove_dimension',
         'click .refresh_cubes' : 'refresh',
         'click .cancel' : 'cancel',
-        'click .admin' : 'admin'
+        'click .admin' : 'admin',
     },
 
     initialize: function(args) {
         // Maintain `this` in jQuery event handlers
-        _.bindAll(this, "caption", "adjust", "adjust_trigger", "toggle_sidebar", "prepare", "new_query", "set_class_charteditor",
+        _.bindAll(this, "caption", "adjust", "adjust_trigger", "toggle_sidebar", "prepare", "new_query","set_class_charteditor",
                 "init_query", "update_caption", "populate_selections","refresh", "sync_query", "cancel", "cancelled", "no_results", "error", "switch_view_state");
 
         // Attach an event bus to the workspace
