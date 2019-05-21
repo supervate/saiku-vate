@@ -1268,8 +1268,6 @@ var Schemas = Backbone.Collection.extend({
         if (this.dialog) {
             this.dialog.populateschema(response);
         }
-        //翻译一遍。。。
-        Saiku.i18n.translate();
         return response;
     }
 })
@@ -1295,9 +1293,6 @@ var Connections = Backbone.Collection.extend({
         if (this.dialog) {
             this.dialog.populate2(response);
         }
-		//翻译一遍。。。
-		debugger
-		Saiku.i18n.translate();
 		return response;
     },
     refresh: function(){
