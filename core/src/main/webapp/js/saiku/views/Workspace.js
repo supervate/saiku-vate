@@ -543,8 +543,8 @@ var Workspace = Backbone.View.extend({
         if (this.query) {
             if (Settings.QUERY_OVERWRITE_WARNING) {
                 (new WarningModal({
-                    title: 'New Query',
-                    message: 'You are about to clear your existing query',
+                    title: '新建查询',
+                    message: '该操作将会清除掉当前修改的所有查询规则。',
                     okay: this.create_new_query,
                     okayobj: this,
                     cancel: this.cancel_new_query,

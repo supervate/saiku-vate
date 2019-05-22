@@ -416,7 +416,7 @@ var WorkspaceDropZone = Backbone.View.extend({
         var measures = details.measures;
 
 		var menuitems = {
-			"HEADER": {name: "Position", disabled:true, i18n: true },
+			"HEADER": {name: "位置", disabled:true, i18n: true },
 			"sep1": "---------",
 			"BOTTOM_COLUMNS": {name: "列 | 度量", i18n: true },
 			"TOP_COLUMNS": {name: "度量 | 列", i18n: true },
@@ -584,36 +584,36 @@ var WorkspaceDropZone = Backbone.View.extend({
                 var citems = {
                         "filter" : {name: "Filter", i18n: true, items:
                          {
-                                "customfilter": {name: "Custom...", i18n: true },
-                                "clearfilter": {name: "Clear Filter", i18n: true }
+                                "customfilter": {name: "自定义...", i18n: true },
+                                "clearfilter": {name: "清除过滤规则", i18n: true }
                          }},
-                        "limit" : {name: "Limit", i18n: true, items:
+                        "limit" : {name: "查询数限制", i18n: true, items:
                         {
-                                "TopCount###SEPARATOR###10": {name: "Top 10", i18n: true },
-                                "BottomCount###SEPARATOR###10": {name: "Bottom 10", i18n: true },
-                                "TopCountQuick" : { name: "Top 10 by...", i18n: true, items: addFun(items, "TopCount") },
-                                "BottomCountQuick" : { name: "Bottom 10 by...", i18n: true, items: addFun(items, "BottomCount") },
-                                "customtop" : {name: "Custom Limit...", i18n: true },
-                                "clearlimit" : {name: "Clear Limit", i18n: true }
+                                "TopCount###SEPARATOR###10": {name: "查询前10条", i18n: true },
+                                "BottomCount###SEPARATOR###10": {name: "查询后10条", i18n: true },
+                                "TopCountQuick" : { name: "通过xxx查询前10条", i18n: true, items: addFun(items, "TopCount") },
+                                "BottomCountQuick" : { name: "通过xxx查询后10条", i18n: true, items: addFun(items, "BottomCount") },
+                                "customtop" : {name: "自定义数量限制...", i18n: true },
+                                "clearlimit" : {name: "清除限制规则", i18n: true }
                          }},
-                        "sort" : {name: "Sort", i18n: true, items:
+                        "sort" : {name: "排序", i18n: true, items:
                         {
-                            "ASCQuick": {name: "Ascending" , i18n: true, items: addFun(items, "ASC") },
-                            "DESCQuick": {name: "Descending", i18n: true, items: addFun(items, "DESC")},
-                            "BASCQuick": {name: "Ascending (Breaking Hierarchy)", i18n: true, items: addFun(items, "BASC")},
-                            "BDESCQuick": {name: "Descending (Breaking Hierarchy)", i18n: true, items: addFun(items, "BDESC") },
-                            "customsort" : { name: "Custom...", i18n: true },
-                            "clearsort" : {name: "Clear Sort", i18n: true }
+                            "ASCQuick": {name: "升序" , i18n: true, items: addFun(items, "ASC") },
+                            "DESCQuick": {name: "降序", i18n: true, items: addFun(items, "DESC")},
+                            "BASCQuick": {name: "升序 (无视层级)", i18n: true, items: addFun(items, "BASC")},
+                            "BDESCQuick": {name: "降序 (无视层级)", i18n: true, items: addFun(items, "BDESC") },
+                            "customsort" : { name: "自定义", i18n: true },
+                            "clearsort" : {name: "清除排序规则", i18n: true }
                         }},
-                        "fold_totals": {name: "Totals", i18n: true, items:
+                        "fold_totals": {name: "统计", i18n: true, items:
                         {
-                            "grand_totals" : {name: "All", i18n: true, items:
+                            "grand_totals" : {name: "可选规则", i18n: true, items:
                             {
-                                "show_totals_not": {name: "None", i18n: true},
-                                "show_totals_sum": {name: "Sum", i18n: true},
-                                "show_totals_min": {name: "Min", i18n: true},
-                                "show_totals_max": {name: "Max", i18n: true},
-                                "show_totals_avg": {name: "Avg", i18n: true}
+                                "show_totals_not": {name: "无", i18n: true},
+                                "show_totals_sum": {name: "累加", i18n: true},
+                                "show_totals_min": {name: "最小", i18n: true},
+                                "show_totals_max": {name: "最大", i18n: true},
+                                "show_totals_avg": {name: "平均值", i18n: true}
                             }}
                         }},
                         "cancel" : { name: "Cancel", i18n: true }

@@ -54,8 +54,8 @@ var SelectionsModal = Modal.extend({
         // Initialize properties
         var self = this;
         _.extend(this, args);
-        this.options.title = "<span class='i18n'>Selections for</span> " + this.name;
-        this.message = "Fetching members...";
+        this.options.title = "<span class='i18n'>为'"+this.name+"'添加过滤</span> ";
+        this.message = "拉取成员信息...";
         this.query = args.workspace.query;
         this.selected_members = [];
         this.available_members = [];
@@ -239,8 +239,8 @@ var SelectionsModal = Modal.extend({
         var search_term = $(this.el).find('.filterbox').val();
         if (!search_term)
             return false;
-
-        var message = '<span class="processing_image">&nbsp;&nbsp;</span> <span class="i18n">Searching for members matching:</span> ' + search_term;
+		/*Searching for members matching*/
+        var message = '<span class="processing_image">&nbsp;&nbsp;</span> <span class="i18n">搜索匹配的成员:</span> ' + search_term;
         self.workspace.block(message);
         self.workspace.query.action.gett(self.search_path, {
                 async: false,
