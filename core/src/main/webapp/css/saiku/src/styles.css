@@ -2921,7 +2921,7 @@ form {
 .user_info .upload_button {
   width: auto;
   height: auto;
-  padding: 3px;
+  /*padding: 3px;*/
 }
 
 .user_info h3 {

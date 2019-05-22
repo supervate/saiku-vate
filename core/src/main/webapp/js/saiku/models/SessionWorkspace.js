@@ -289,9 +289,15 @@ var SessionWorkspace = Backbone.Model.extend({
 					// Saiku.tabs.add(new SplashScreen());
 					//如果设置了该参数 且为管理员 则打开数据源管理
 					if (paramsURI.isDataSource == true && Saiku.session.isAdmin){
+						Settings.SHOW_DATASOURCE_MANAGEMENT = true;
+						Settings.SHOW_USER_MANAGEMENT = false;
 						Saiku.AdminConsole.show_admin();
 						Saiku.toolbar.hideToolBar();
 						Saiku.tabs.hideTabBar();
+					}
+					else if(paramsURI.isAllManage == true && Saiku.session.isAdmin){
+						Settings.SHOW_DATASOURCE_MANAGEMENT = true;
+						Saiku.AdminConsole.show_admin();
 					}
 					else {
 						//隐藏工具栏

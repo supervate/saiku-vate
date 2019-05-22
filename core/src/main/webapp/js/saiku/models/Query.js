@@ -122,7 +122,7 @@ var Query = Backbone.Model.extend({
         this.workspace.trigger('query:run');
         this.result.result = null;
         var validated = false;
-        var errorMessage = '<span class="i18n">Query Validation failed!</span>';
+        var errorMessage = '<span class="i18n">查询校验失败！</span>';
 
         var exModel = this.helper.model();
 		for(var k in this.attributes) {
@@ -142,11 +142,14 @@ var Query = Backbone.Model.extend({
                     errorMessage = "";
                 }
                 if (!columnsOk && !detailsOk) {
-                    errorMessage += '<span class="i18n">You need to include at least one measure or a level on columns for a valid query.</span>';
+                    errorMessage += '<strong style="color: red;font-size: 12px">执行出错：</strong><br><span class="i18n">至少需要添加一个度量或者层级到\'列\'中！</span>';
                 }
                 if(!rowsOk) {
-                    errorMessage += '<span class="i18n">You need to include at least one level on rows for a valid query.</span>';
-
+                	if (!columnsOk && !detailsOk){
+						errorMessage += '<br/><span class="i18n">至少需要添加一个层级到\'行\'中！</span>';
+					}else {
+						errorMessage += '<strong style="color: red;font-size: 12px">执行出错：</strong><br><span class="i18n">至少需要添加一个层级到\'行\'中！</span>';
+					}
                 }
                 if ( (columnsOk || detailsOk) && rowsOk) {
                     validated = true;
@@ -155,7 +158,7 @@ var Query = Backbone.Model.extend({
             } else if (exModel.type == "MDX") {
                 validated = (exModel.mdx && exModel.mdx.length > 0);
                 if (!validated) {
-                    errorMessage = '<span class="i18n">You need to enter some MDX statement to execute.</span>';
+                    errorMessage = '<span class="i18n">请输入要执行的MDX执行语句.</span>';
                 }
             }
         }
@@ -184,7 +187,7 @@ var Query = Backbone.Model.extend({
 
         this.result.save({},{ contentType: "application/json", data: JSON.stringify(exModel), error: function() {
             Saiku.ui.unblock();
-            var errorMessage = '<span class="i18n">Error executing query. Please check the server logs or contact your administrator!</span>';
+            var errorMessage = '<span class="i18n">查询出错！请检查服务日志或联系管理员！</span>';
             self.workspace.table.clearOut();
             $(self.workspace.processing).html(errorMessage).show();
             self.workspace.adjust();

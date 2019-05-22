@@ -46,7 +46,7 @@ public class EncryptAndDecryptUtil {
     public String decryptContentForRqpanda(String content){
 //        SymmetricCrypto des = new SymmetricCrypto(SymmetricAlgorithm.AES,getKey());
         try {
-            return URLDecoder.decode(decrypt(content,encryptKey),"utf8");
+            return decrypt(URLDecoder.decode(content,"utf-8"),encryptKey);
         } catch (UnsupportedEncodingException e) {
             return null;
         }
@@ -92,8 +92,9 @@ public class EncryptAndDecryptUtil {
                 //使用密钥初始化，设置为解密模式
                 cipher.init(Cipher.DECRYPT_MODE, getSecretKey(password));
 
+                byte[] decodedContent = Base64.decodeBase64(content);
                 //执行操作
-                byte[] result = cipher.doFinal(Base64.decodeBase64(content));
+                byte[] result = cipher.doFinal(decodedContent);
 
                 return new String(result, "utf-8");
             } catch (Exception ex) {

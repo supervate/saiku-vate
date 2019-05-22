@@ -257,16 +257,18 @@ var AdminConsole = Backbone.View.extend({
             "    <ul id='queries' class='RepositoryObjects'>"+
 			/*fixme by vate*/
 			/*把用户管理的这一块给禁止了*/
-            /*"<% if(Settings.SHOW_USER_MANAGEMENT) { %>"+
-            "<li><strong>User Management</strong>" +
-            "<ul class='inner_users'><li class='create_user'>Add User</li></ul></li>" +
-            "<% } %>"+*/
+            "<% if(Settings.SHOW_USER_MANAGEMENT) { %>"+
+            "<li><strong>用户列表</strong>" +
+            "<ul class='inner_users'><li class='create_user'><strong>添加新用户</strong></li></ul></li>" +
+            "<% } %>"+
+			"<% if(Settings.SHOW_DATASOURCE_MANAGEMENT) { %>"+
             "<li><strong>数据源管理</strong></li>" +
             "<ul class='dslist'><strong>数据源列表</strong>"+
             "<ul class='inner_datasource'><li class='create_datasource'>Add Data Source</li></ul></ul>" +
             "<ul class='dslist'><strong>'多维定义'列表</strong>"+
-            "<ul class='inner_schema'><li class='create_schema'>Add Schema</li></ul></ul>" +
-            "<li class='license_container'><strong>License</strong>" +
+			"<ul class='inner_schema'><li class='create_schema'>Add Schema</li></ul></ul>" +
+			"<% } %>"+
+			"<li class='license_container'><strong>License</strong>" +
             "<ul><li class='license_info'>Information</li>" +
             "<li class='license_users_list'>Users List</li></ul></li>"+
             "</ul>" +
@@ -475,28 +477,28 @@ var AdminConsole = Backbone.View.extend({
         "<a href='<%= user.id%>' class='save_user btn btn-default  user_button form_button'>Save Changes</a>" +
         "<a href='#' class='save_new_user form_button btn btn-default  user_button hide'>Save User</a><div class='clear'>" +
         "</div></div></form>"),
-    datasourcetemplate: _.template("<form><h3>Create Data Source</h3>"+
-        "<div class='simpleConnection'><label for='connname'>Name:</label><input type='text' class='form-control' name='connname' value='<%= conn.connectionname %>'/><br />" +
-        "<label for='drivertype'>Connection Type:</label><select name='drivertype' class='form-control drivertype'><option value='MONDRIAN'>Mondrian</option><option value='XMLA'>XMLA</option></select><br/>" +
+    datasourcetemplate: _.template("<form><h3>数据源信息</h3>"+
+        "<div class='simpleConnection' style='margin-top: 10px;'><label for='connname'>数据源名称:</label><input type='text' class='form-control' name='connname' value='<%= conn.connectionname %>'/><br />" +
+        "<label for='drivertype'>连接类型:</label><select name='drivertype' class='form-control drivertype'><option value='MONDRIAN'>Mondrian</option><option value='XMLA'>XMLA</option></select><br/>" +
         "<% if(!Settings.EXT_DATASOURCE_PROPERTIES) { %>"+
         "<label for='jdbcurl'>URL:</label><input name='jdbcurl' class='form-control' value='<%= conn.jdbcurl %>' type='text'/><br class='horridbr'/>" +
         "<% } else {    %>"+
         "<input name='jdbcurl' type='hidden'/>" +
         "<% } %>"+
-        "<label for='schemapath'>Schema:</label><select class='form-control schemaselect' name='schemapath'>" +
+        "<label for='schemapath'>多维定义:</label><select class='form-control schemaselect' name='schemapath'>" +
         "<% _.each(schemas, function(path){%>" +
         "<option <% if (conn.schema !== null && (conn.schema === 'mondrian://' + path.attributes.path || conn.schema === path.attributes.path)) { print('selected'); } %> ><%= path.attributes.path %></option>" +
         "<%});%></select><br/>" +
         "<% if(!Settings.EXT_DATASOURCE_PROPERTIES) { %>"+
-        "<label for='driver'>JDBC Driver: </label><input name='driver' class='form-control' value='<%= conn.driver %>' type='text'/><br class='horridbr'/>" +
-        "<label for='connusername'>Username: </label><input name='connusername' class='form-control' type='text' value='<%= conn.username %>'/><br/>" +
-        "<label for='connpassword'>Password:</label><input name='connpassword' class='form-control' type='password' value='<%= conn.password %>'/><br/>" +
+        "<label for='driver'>JDBC驱动: </label><input name='driver' class='form-control' value='<%= conn.driver %>' type='text'/><br class='horridbr'/>" +
+        "<label for='connusername'>数据库用户名: </label><input name='connusername' class='form-control' type='text' value='<%= conn.username %>'/><br/>" +
+        "<label for='connpassword'>数据库密码:</label><input name='connpassword' class='form-control' type='password' value='<%= conn.password %>'/><br/>" +
         "<% } else {    %>"+
         "<input name='driver' type='hidden'/>" +
         "<input name='connusername' type='hidden'/>" +
         "<input name='connpassword' type='hidden'/>" +
         "<% } %>"+
-        "<label for='securityselect'>Security:</label><select class='form-control securityselect' id='secselect' name='securityselect'>" +
+        "<label for='securityselect'>安全选项:</label><select class='form-control securityselect' id='secselect' name='securityselect'>" +
         "<option value='NONE'>None</option><option value='ONE2ONE'>One To One Mapping</option><option value='PASSTHROUGH'>Passthrough (for XMLA)</option></select><br/>" +
         "<% if(Settings.EXT_DATASOURCE_PROPERTIES) { %>"+
         "<label for='extpropselect'>External Properties Key:</label>" +
@@ -506,20 +508,20 @@ var AdminConsole = Backbone.View.extend({
         "<%});%>"+
         "</select><% } %><br/></div>" +
         "<div class='advconnection' style='display:none;'><textarea name='adv_text' class='form-control' rows='10' cols='75'><%= conn.advanced %></textarea></div>" +
-        "<br/><br/><a href='' name='advancedurl' class='advancedurl btn btn-default'>Advanced</a>" +
+        "<br/><br/><a href='' name='advancedurl' class='advancedurl btn btn-default'>高级设置</a>" +
         "<% if(Settings.DATA_SOURCES_LOOKUP) { %><a href='' name='getdatasources' class='btn btn-default getdatasources'>Data Sources</a> <% } %>" +
-        "<a href='<%= conn.id%>' class='user_button btn btn-danger form_button remove_datasource hide'>Remove</a>" +
-        "<a href='<%= conn.id%>' class='user_button form_button btn btn-default save_datasource'>Save</a>" +
-        "<a href='<%= conn.id%>' class='refresh_button form_button user_button btn btn-default hide'>Refresh" +
-        " Cache</a><div class='clear'></div></form>" +
+        "<a href='<%= conn.id%>' class='user_button btn btn-danger form_button remove_datasource hide'>删除</a>" +
+        "<a href='<%= conn.id%>' class='user_button form_button btn btn-default save_datasource'>保存</a>" +
+        "<a href='<%= conn.id%>' class='refresh_button form_button user_button btn btn-default hide'>刷新缓存" +
+		"</a><div class='clear'></div></form>" +
         "<div id='savestatus'></div>"
        ),
-    schemauploadtemplate: _.template( "<h3>Schema Management</h3>" +
-        "<input name='fileschema' type='file' class='form-control upload_button'/><div class='clear'></div><br/>" +
-        "<label for='schemaname'>Schema Name:</label><input name='schemaname' type='text' class='form-control' value='<%=" +
+    schemauploadtemplate: _.template( "<h3>多维定义</h3>" +
+        "<input style='margin-top: 10px' name='fileschema' type='file' class='form-control upload_button'/><div class='clear'></div><br/>" +
+        "<label for='schemaname' style='font-size: 10px;'>'多维定义'名称:</label><input name='schemaname' type='text' class='form-control' value='<%=" +
         " schema.id %>'/><br/>" +
-        "<a href='<%= schema.id%>' class='user_button form_button btn btn-default remove_schema hide'>Remove</a>" +
-        "<a href='<%= Settings.REST_URL + AdminUrl %>/schema/<%= schema.id%>' class='user_button btn btn-default form_button download_schema hide'>Download</a><input type='submit' class='user_button form-control form_button upload_button submitdatasource' value='Upload'>" +
+        "<a href='<%= schema.id%>' class='user_button form_button btn btn-default remove_schema hide'>删除</a>" +
+        "<a href='<%= Settings.REST_URL + AdminUrl %>/schema/<%= schema.id%>' class='user_button btn btn-default form_button download_schema hide'>下载</a><input type='submit' class='user_button btn btn-default form-control form_button upload_button submitdatasource' value='上传'>" +
         "<br/><div id='uploadstatus'></div>"),
     licenseInfoTemplate: _.template("<h3>License Information</h3>" +
         "<ul class='license_type'><li><strong>License Type: </strong></li>" +
@@ -794,7 +796,7 @@ var AdminConsole = Backbone.View.extend({
     },
     clear_users: function() {
     $(this.el).find('.inner_users').empty();
-    $(this.el).find('.inner_users').append("<li class='create_user'>Add User</li>");
+    $(this.el).find('.inner_users').append("<li class='create_user'><strong>添加新用户</strong></li>");
     },
     clear_datasources: function(){
         $(this.el).find('.inner_datasource').empty();
@@ -836,10 +838,14 @@ var AdminConsole = Backbone.View.extend({
         schema.set('name', $(this.el).find("input[name='schemaname']").val());
         var that = this;
         this.schemas.create({file: file, name: $(this.el).find("input[name='schemaname']").val()}, {processData: true, success: function(){
-            $(that.el).find('#uploadstatus').html("Upload Successful!");
+            $(that.el).find('#uploadstatus').html("<strong style='font-size: 12px'>上传成功！</strong>");
             that.schemas.fetch();
         },error: function(data, xhr){
-            $(that.el).find('#uploadstatus').html("Upload failed!<br/>("+xhr.responseText+")");
+        	if (xhr.responseText == ""){
+				$(that.el).find('#uploadstatus').html("<strong style='margin-top: 10px; color: red; font-size: 17px'>上传出错！</strong><br/><strong style='color: red; font-size: 13px'>错误原因:请先选择有效的文件！</strong>");
+			}else {
+				$(that.el).find('#uploadstatus').html("<strong style='margin-top: 10px; color: red; font-size: 17px'>上传出错！</strong><br/><strong style='color: red; font-size: 13px'>错误原因:"+xhr.responseText+"</strong>");
+			}
             that.schemas.fetch();
         }});
     },

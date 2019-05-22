@@ -418,13 +418,13 @@ var WorkspaceDropZone = Backbone.View.extend({
 		var menuitems = {
 			"HEADER": {name: "Position", disabled:true, i18n: true },
 			"sep1": "---------",
-			"BOTTOM_COLUMNS": {name: "Columns | Measures", i18n: true },
-			"TOP_COLUMNS": {name: "Measures | Columns", i18n: true },
-			"BOTTOM_ROWS": {name: "Rows | Measures", i18n: true },
-			"TOP_ROWS": {name: "Measures | Rows", i18n: true },
+			"BOTTOM_COLUMNS": {name: "列 | 度量", i18n: true },
+			"TOP_COLUMNS": {name: "度量 | 列", i18n: true },
+			"BOTTOM_ROWS": {name: "行 | 度量", i18n: true },
+			"TOP_ROWS": {name: "度量 | 行", i18n: true },
 			"sep2": "---------",
-			"reset": {name: "Reset Default", i18n: true },
-			"cancel": {name: "Cancel", i18n: true }
+			"reset": {name: "重置", i18n: true },
+			"cancel": {name: "取消", i18n: true }
 		};
 
 		$.each(menuitems, function(key, item){

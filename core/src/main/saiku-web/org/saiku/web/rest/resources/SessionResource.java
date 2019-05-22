@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +86,8 @@ public class SessionResource  {
 			//by vate
 			//自定义的字段，里面包含用户名和密码信息
 			if (StringUtils.isNotBlank(actk)){
+				//因为我们的内容是经过了一层urlencode的 而 经过urlencode的数据 在到达这里之前 又会被容器或者springmvc进行了一层url解码，为了保持一致性，我们选择再重新用urlencode一次
+				actk = URLEncoder.encode(actk,"utf-8");
 				//解析出username 和 pwd
 				String actkInfo = encryptAndDecryptUtil.decryptContentForRqpanda(actk);
 				String[] usernameAndPwd = actkInfo.split(",");
