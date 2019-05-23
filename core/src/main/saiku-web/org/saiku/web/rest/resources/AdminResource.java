@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -877,8 +878,11 @@ public class AdminResource {
         return false;
     }
 
-
-    public Response testDatasource(String connInfo){
+    @POST
+    @Produces("application/json")
+//    @Consumes("application/x-www-form-urlencoded")
+    @Path("/testDatasource")
+    public Response testDatasource(@FormParam("connInfo") String connInfo){
         long testTimeOut = 5;
         log.debug("测试数据源连接,数据源信息为{}",connInfo);
         if (connInfo == null) {
@@ -895,19 +899,19 @@ public class AdminResource {
             try {
                 advancedProperties.load(infoIs);
             } catch (IOException e) {
-                return Response.status(-1).entity("数据源详细信息解析失败，请检查后重试！").build();
+                return Response.ok("数据源连接失败！数据源详细信息解析失败，请检查后重试！").build();
             }
             if (advancedProperties.get("driver") == null){
-                return Response.status(-1).entity("请传入数据库驱动类名称！").build();
+                return Response.ok("数据源连接失败！请传入数据库驱动类名称！").build();
             }
             if (advancedProperties.get("location") == null){
-                return Response.status(-1).entity("请传入数据库连接Url(在手动填写栏中，该参数名为location)！").build();
+                return Response.ok("数据源连接失败！请传入数据库连接Url(在手动填写栏中，该参数名为location)！").build();
             }
             if (advancedProperties.get("username") == null){
-                return Response.status(-1).entity("请传入数据库驱动类名称！").build();
+                return Response.ok("数据源连接失败！请传入数据库驱动类名称！").build();
             }
             if (advancedProperties.get("password") == null){
-                return Response.status(-1).entity("请传入数据库驱动类名称！").build();
+                return Response.ok("数据源连接失败！请传入数据库驱动类名称！").build();
             }
             driverClass = advancedProperties.get("driver")+"";
             jdbcUrl = advancedProperties.get("location")+"";
@@ -929,20 +933,20 @@ public class AdminResource {
                     connection0 = DriverManager.getConnection(jdbcUrl,userName, pwd);
                 } catch (SQLException e) {
                     log.error("测试数据源连接失败,请检查'数据源url'或'数据库帐号'、'密码'填写是否准确!", e);
-                    errorInfo.append("测试数据源连接失败,请检查'数据源url'或'数据库帐号'、'密码'填写是否准确!");
+                    errorInfo.append("数据源连接失败,请检查'数据源url'或'数据库帐号'、'密码'填写是否准确！");
                 }
                 return connection0;
             });
             connection = (Connection) future.get(testTimeOut, TimeUnit.SECONDS);
         } catch (ClassNotFoundException e) {
-            log.error("测试数据源连接失败,请检查驱动填写是否正确!", e);
-            errorInfo.append("请检查驱动填写是否正确!");
+            log.error("测试数据源连接失败,请检查驱动填写是否正确！", e);
+            errorInfo.append("数据源连接失败！请检查驱动填写是否正确！");
         } catch (InterruptedException e) {
             log.error("测试数据源连接失败!", e);
             errorInfo.delete(0,errorInfo.length());
             errorInfo.append("测试数据源连接失败,请重试!(InterruptedException)");
         } catch (ExecutionException e) {
-            log.error("测试数据源连接失败!", e);
+            log.error("测试数据源连接失败！", e);
             errorInfo.delete(0,errorInfo.length());
             errorInfo.append("测试数据源连接失败,请重试!(ExecutionException)");
         } catch (TimeoutException e) {
@@ -953,7 +957,7 @@ public class AdminResource {
         if (connection != null) {
             return Response.ok("连接成功").build();
         } else {
-            return Response.status(-1).entity(errorInfo.toString()).build();
+            return Response.ok(errorInfo.toString()).build();
         }
     }
 
