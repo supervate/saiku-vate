@@ -120,7 +120,6 @@ public interface IDatasourceManager {
 
   String getFoodmarturl();
 
-
   String getEarthquakeUrl();
 
   String getEarthquakeDir();

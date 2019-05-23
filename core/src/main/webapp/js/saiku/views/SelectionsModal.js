@@ -23,9 +23,9 @@ var SelectionsModal = Modal.extend({
     paramvalue: null,
 
     buttons: [
-        { text: "OK", method: "save" },
-        { text: "Open Date Filter", method: "open_date_filter" },
-        { text: "Cancel", method: "close" }
+        { text: "确认", method: "save" },
+        { text: "开启时间过滤", method: "open_date_filter" },
+        { text: "取消", method: "close" }
     ],
 
     events: {

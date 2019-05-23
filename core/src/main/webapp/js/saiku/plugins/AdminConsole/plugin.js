@@ -36,6 +36,7 @@ var AdminConsole = Backbone.View.extend({
         'click .remove_schema' : 'remove_schema',
         'click .remove_user' : 'remove_user',
         'click .refresh_button':'refresh_datasource',
+        'click .test_datasource_button':'test_datasource',
         'click .advancedurl' :'advanced_url',
         'click .getdatasources' :'get_data_sources',
         'change .drivertype' : 'change_driver',
@@ -477,7 +478,8 @@ var AdminConsole = Backbone.View.extend({
         "<a href='<%= user.id%>' class='save_user btn btn-default  user_button form_button'>Save Changes</a>" +
         "<a href='#' class='save_new_user form_button btn btn-default  user_button hide'>Save User</a><div class='clear'>" +
         "</div></div></form>"),
-    datasourcetemplate: _.template("<form><h3>数据源信息</h3>"+
+    datasourcetemplate: _.template(
+    	"<form><h3>数据源信息</h3>"+
         "<div class='simpleConnection' style='margin-top: 10px;'><label for='connname'>数据源名称:</label><input type='text' class='form-control' name='connname' value='<%= conn.connectionname %>'/><br />" +
         "<label for='drivertype'>连接类型:</label><select name='drivertype' class='form-control drivertype'><option value='MONDRIAN'>Mondrian</option><option value='XMLA'>XMLA</option></select><br/>" +
         "<% if(!Settings.EXT_DATASOURCE_PROPERTIES) { %>"+
@@ -508,11 +510,13 @@ var AdminConsole = Backbone.View.extend({
         "<%});%>"+
         "</select><% } %><br/></div>" +
         "<div class='advconnection' style='display:none;'><textarea name='adv_text' class='form-control' rows='10' cols='75'><%= conn.advanced %></textarea></div>" +
-        "<br/><br/><a href='' name='advancedurl' class='advancedurl btn btn-default'>高级设置</a>" +
+        "<br/><br/>" +
+		"<a href='' name='advancedurl' class='advancedurl btn btn-default hide'>手动填写</a>" +
         "<% if(Settings.DATA_SOURCES_LOOKUP) { %><a href='' name='getdatasources' class='btn btn-default getdatasources'>Data Sources</a> <% } %>" +
         "<a href='<%= conn.id%>' class='user_button btn btn-danger form_button remove_datasource hide'>删除</a>" +
         "<a href='<%= conn.id%>' class='user_button form_button btn btn-default save_datasource'>保存</a>" +
         "<a href='<%= conn.id%>' class='refresh_button form_button user_button btn btn-default hide'>刷新缓存" +
+        "<a href='<%= conn.id%>' class='test_datasource_button form_button user_button btn btn-default'>测试连接" +
 		"</a><div class='clear'></div></form>" +
         "<div id='savestatus'></div>"
        ),
@@ -967,6 +971,99 @@ var AdminConsole = Backbone.View.extend({
             });
         }
     },
+	test_datasource: function (event) {
+        event.preventDefault();
+
+        var self = this;
+        var $currentTarget = $(event.currentTarget);
+        var name = this.$el.find('input[name="connname"]').val();
+        var connType = this.$el.find('.drivertype').val();
+        var jdbcUrl = this.$el.find('input[name="jdbcurl"]').val();
+        var mondrianSchema = this.$el.find('.schemaselect').val();
+        var driver = this.$el.find('input[name="driver"]').val();
+        var connUserName = this.$el.find('input[name="connusername"]').val();
+        var connPassword = this.$el.find('input[name="connpassword"]').val();
+        var advanced = this.$el.find('textarea[name="adv_text"]').val();
+        var isVisibleAdvancedConn = this.$el.find('.advconnection').is(':visible');
+        var alertMsg = '';
+        var connInfo;
+
+        if (advanced !== null && advanced !== undefined && advanced !== '') {
+			connInfo = { 'advanced':  advanced };
+        } else {
+            var securityType = this.$el.find('.securityselect').val();
+			connInfo= {
+               'connectionname': name,
+                'connectiontype': connType,
+                'jdbcurl': jdbcUrl,
+                'schema': mondrianSchema,
+                'driver': driver,
+                'username': connUserName,
+                'password': connPassword
+            };
+
+            if (securityType === 'ONE2ONE') {
+				connInfo.security_type = 'one2one';
+            }
+            else if (securityType === 'PASSTHROUGH') {
+				connInfo.security_type = 'passthrough';
+            }
+            else {
+				connInfo.security_type = null;
+			}
+
+            if (this.$el.find('.extpropselect').val()) {
+				connInfo.propertyKey = this.$el.find('.extpropselect').val();
+			}
+        }
+
+        if (_.isEmpty(name) && !isVisibleAdvancedConn) {
+            alertMsg += '<li>数据源名称不能为空！</li>';
+        }
+        if (_.isEmpty(jdbcUrl) && connType !== 'MONGO' && !isVisibleAdvancedConn) {
+            alertMsg += '<li>URL不能为空！</li>';
+        }
+        if (_.isEmpty(driver) && connType === 'MONDRIAN' && connType !== 'MONGO' && !isVisibleAdvancedConn) {
+            alertMsg += '<li>JDBC驱动不能为空！</li>';
+        }
+        if (_.isEmpty(advanced) && isVisibleAdvancedConn) {
+            alertMsg += '<li>内容不能为空！</li>';
+        }
+        if (alertMsg !== '') {
+            (new WarningModal({
+                title: '<span class="i18n">Required Fields</span>',
+                message: '<ul>' + alertMsg + '</ul>'
+            })).render().open();
+        }
+        else {
+			var loadIndex = layer.load(1, {
+				shade: [0.1,'#fff'] //0.1透明度的白色背景
+			});
+        	$.ajax({
+				url: Settings.REST_URL+AdminUrl+"/testDatasource",
+				type: 'POST',
+				data: {
+					"connInfo":JSON.stringify(connInfo)
+				},
+				success: function( data ) {
+					layer.close(loadIndex);
+					var confirmIndex = layer.confirm(data, {
+						btn: ['确定'] //按钮
+					}, function(){
+						layer.close(confirmIndex);
+					});
+				},
+				error: function(errmsg) {
+					layer.close(loadIndex);
+					var confirmIndex = layer.confirm(errmsg, {
+						btn: ['确定'] //按钮
+					}, function(){
+						layer.close(confirmIndex);
+					});
+				}
+			});
+		}
+    },
 
     remove_datasource : function(event) {
         event.preventDefault();
@@ -1030,6 +1127,7 @@ var AdminConsole = Backbone.View.extend({
     advanced_url : function(event){
         event.preventDefault();
         $(this.el).find(".simpleConnection").hide();
+        $(this.el).find(".advancedurl").hide();
         $(this.el).find(".advconnection").show();
     },
     get_data_sources: function(event) {

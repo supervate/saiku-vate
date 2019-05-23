@@ -45,7 +45,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.*;
 
 import javax.jcr.RepositoryException;
 import javax.ws.rs.*;
@@ -70,6 +74,9 @@ public class AdminResource {
 
     private static final String accessAccount = "rqpanda";
     private static final String accessPwd = "eLXZYVEg292bgbD6";
+
+    private static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*2);
+
 
     public LogExtractor getLogExtractor() {
         return logExtractor;
@@ -870,6 +877,86 @@ public class AdminResource {
         return false;
     }
 
+
+    public Response testDatasource(String connInfo){
+        long testTimeOut = 5;
+        log.debug("测试数据源连接,数据源信息为{}",connInfo);
+        if (connInfo == null) {
+            return Response.status(-1).entity("请传入数据源信息！").build();
+        }
+        JSONObject connInfoObj = JSONUtil.parseObj(connInfo);
+        String driverClass;
+        String jdbcUrl;
+        String userName;
+        String pwd;
+        if (connInfoObj.get("advanced") != null){
+            Properties advancedProperties = new Properties();
+            InputStream infoIs = new ByteArrayInputStream(connInfoObj.getStr("advanced").getBytes());
+            try {
+                advancedProperties.load(infoIs);
+            } catch (IOException e) {
+                return Response.status(-1).entity("数据源详细信息解析失败，请检查后重试！").build();
+            }
+            if (advancedProperties.get("driver") == null){
+                return Response.status(-1).entity("请传入数据库驱动类名称！").build();
+            }
+            if (advancedProperties.get("location") == null){
+                return Response.status(-1).entity("请传入数据库连接Url(在手动填写栏中，该参数名为location)！").build();
+            }
+            if (advancedProperties.get("username") == null){
+                return Response.status(-1).entity("请传入数据库驱动类名称！").build();
+            }
+            if (advancedProperties.get("password") == null){
+                return Response.status(-1).entity("请传入数据库驱动类名称！").build();
+            }
+            driverClass = advancedProperties.get("driver")+"";
+            jdbcUrl = advancedProperties.get("location")+"";
+            userName = advancedProperties.get("username")+"";
+            pwd = advancedProperties.get("password")+"";
+        }else {
+            driverClass = connInfoObj.getStr("driver");
+            jdbcUrl = connInfoObj.getStr("jdbcurl");
+            userName = connInfoObj.getStr("username");
+            pwd = connInfoObj.getStr("password");
+        }
+        final StringBuilder errorInfo = new StringBuilder();
+        Connection connection = null;
+        try {
+            Class.forName(driverClass);
+            Future future = executorService.submit(()->{
+                Connection connection0 = null;
+                try {
+                    connection0 = DriverManager.getConnection(jdbcUrl,userName, pwd);
+                } catch (SQLException e) {
+                    log.error("测试数据源连接失败,请检查'数据源url'或'数据库帐号'、'密码'填写是否准确!", e);
+                    errorInfo.append("测试数据源连接失败,请检查'数据源url'或'数据库帐号'、'密码'填写是否准确!");
+                }
+                return connection0;
+            });
+            connection = (Connection) future.get(testTimeOut, TimeUnit.SECONDS);
+        } catch (ClassNotFoundException e) {
+            log.error("测试数据源连接失败,请检查驱动填写是否正确!", e);
+            errorInfo.append("请检查驱动填写是否正确!");
+        } catch (InterruptedException e) {
+            log.error("测试数据源连接失败!", e);
+            errorInfo.delete(0,errorInfo.length());
+            errorInfo.append("测试数据源连接失败,请重试!(InterruptedException)");
+        } catch (ExecutionException e) {
+            log.error("测试数据源连接失败!", e);
+            errorInfo.delete(0,errorInfo.length());
+            errorInfo.append("测试数据源连接失败,请重试!(ExecutionException)");
+        } catch (TimeoutException e) {
+            log.error("测试数据源连接失败，获取数据源连接超时，请检查数据源是否启动,网络是否畅通！", e);
+            errorInfo.delete(0,errorInfo.length());
+            errorInfo.append("测试数据源连接失败，获取数据源连接超时，请检查数据源是否启动,网络是否畅通！");
+        }
+        if (connection != null) {
+            return Response.ok("连接成功").build();
+        } else {
+            return Response.status(-1).entity(errorInfo.toString()).build();
+        }
+    }
+
     public EncryptAndDecryptUtil getEncryptAndDecryptUtil() {
         return encryptAndDecryptUtil;
     }
@@ -877,4 +964,5 @@ public class AdminResource {
     public void setEncryptAndDecryptUtil(EncryptAndDecryptUtil encryptAndDecryptUtil) {
         this.encryptAndDecryptUtil = encryptAndDecryptUtil;
     }
+
 }

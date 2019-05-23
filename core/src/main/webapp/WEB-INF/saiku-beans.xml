@@ -17,17 +17,25 @@
             ignore-unresolvable="true"
             order ="0" />
 
+	<!--平台库的数据源配置-->
     <context:property-placeholder
-            location="file:///${ext.prop.dir}saiku-beans.properties"
+            location="/WEB-INF/rqcubeDbInfo.properties"
             ignore-resource-not-found="true"
             ignore-unresolvable="true"
-            order ="-1" />
+            order ="0" />
 
 	<context:property-placeholder
 		location="/WEB-INF/rqpandaConnectionInfo.properties"
 		ignore-resource-not-found="true"
 		ignore-unresolvable="true"
 		order ="0" />
+
+    <context:property-placeholder
+            location="file:///${ext.prop.dir}saiku-beans.properties"
+            ignore-resource-not-found="true"
+            ignore-unresolvable="true"
+            order ="-1" />
+
 
     <bean id="sessionRegistry"
           class="org.springframework.security.core.session.SessionRegistryImpl" />
@@ -74,8 +82,12 @@
     </bean>
 
 
-    <bean id="h2database" class="org.saiku.database.Database" init-method="init">
+    <bean id="rqcubeDatabase" class="org.saiku.database.Database" init-method="init">
         <property name="datasourceManager" ref="repositoryDsManager"/>
+        <property name="dbUrl" value="${rqcube.url}"/>
+        <property name="dbUsername" value="${rqcube.username}"/>
+        <property name="dbPwd" value="${rqcube.password}"/>
+
     </bean>
 
     <bean id="authorisationPredicate" class="org.saiku.service.util.security.authorisation.MustBeAuthenticatedAuthorisation"/>
@@ -109,11 +121,11 @@
 
     <bean id="userDaoDataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${userdao.driverclass}" />
+        <property name="driverClassName" value="${rqcube.driverclass}" />
         <property name="url"
-                  value="${userdao.url}"/>
-        <property name="username" value="${userdao.username}" />
-        <property name="password" value="${userdao.password}" />
+                  value="${rqcube.url}"/>
+        <property name="username" value="${rqcube.username}" />
+        <property name="password" value="${rqcube.password}" />
     </bean>
 
     <bean id="userDAO" class="org.saiku.database.JdbcUserDAO">
@@ -229,7 +241,7 @@
         <property name="repositoryDatasourceManager" ref="repositoryDsManager"/>
     </bean>
     <bean id="licenseBean" class="org.saiku.web.rest.resources.License">
-        <property name="databaseManager" ref="h2database"/>
+        <property name="databaseManager" ref="rqcubeDatabase"/>
         <property name="licenseUtils" ref="licenseUtils"/>
         <property name="userService" ref="userServiceBean"/>
     </bean>

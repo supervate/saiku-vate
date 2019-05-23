@@ -16,6 +16,12 @@
             ignore-resource-not-found="true"
             ignore-unresolvable="true"
             order ="0" />
+	<!--平台库数据源信息-->
+    <context:property-placeholder
+            location="/WEB-INF/rqcubeDbInfo.properties"
+            ignore-resource-not-found="true"
+            ignore-unresolvable="true"
+            order ="0" />
 
     <context:property-placeholder
             location="file:///${ext.prop.dir}applicationContext-spring-security-jdbc.properties"
@@ -56,11 +62,11 @@
     </bean>
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${jdbcauth.driver}" />
+        <property name="driverClassName" value="${rqcube.driverclass}" />
         <property name="url"
-                  value="${jdbcauth.url}"/>
-        <property name="username" value="${jdbcauth.username}" />
-        <property name="password" value="${jdbcauth.password}" />
+                  value="${rqcube.url}"/>
+        <property name="username" value="${rqcube.username}" />
+        <property name="password" value="${rqcube.password}" />
     </bean>
 
     <bean id="passwordEncoder"

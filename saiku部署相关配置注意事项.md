@@ -4,11 +4,5 @@ saiku部署需要注意的地方:
 
 saiku-beans.xml 文件中有两个 saiku-beans.properties文件 分别对应生产(pro)和开发(dev)模式 这个一定要注意 在不同环境记得切换!!!!
 
-需要设置数据源配置的地方有:
-    1.applicationContext-spring-security-jdbc.properties
-	2.saiku-beans-dev(pro).properties
-	3.web.xml:  
-	    <context-param>
-    		<param-name>db.url</param-name>
-    		<param-value>jdbc:mysql://gzraqsoft.mynetgear.com:3306/saiku</param-value>
-    	</context-param>
+设置平台库数据源配置的地方(非数据源等元数据，也非样例数据，而是用户库的数据源):
+    1.rqcubeDbInfo.properties

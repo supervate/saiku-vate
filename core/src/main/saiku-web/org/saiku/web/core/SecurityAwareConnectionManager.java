@@ -118,7 +118,7 @@ public class SecurityAwareConnectionManager extends AbstractConnectionManager im
 		} else {
 			con = connections.get(newName);
 		}
-		if (con != null && !isDatasourceSecurity(datasource, ISaikuConnection.SECURITY_TYPE_PASSTHROUGH_VALUE)) {
+ 		if (con != null && !isDatasourceSecurity(datasource, ISaikuConnection.SECURITY_TYPE_PASSTHROUGH_VALUE)) {
 			con = applySecurity(con, datasource);
 		}
 		return con;

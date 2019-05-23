@@ -805,9 +805,9 @@ public class JackRabbitRepositoryManager implements IRepositoryManager {
       if (d != null) {
         d.setPath(n.getPath());
       }
-      
-      if (getCookieUsername() != null) {
-        if (getCookieUsername().equals(d.getUsername())) {
+      String cookieUsername = getCookieUsername();
+      if (cookieUsername != null) {
+        if (cookieUsername.equals(d.getUsername())) {
           ds.add(d);
         }
       } else {

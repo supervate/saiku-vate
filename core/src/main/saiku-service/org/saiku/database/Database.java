@@ -1,6 +1,7 @@
 package org.saiku.database;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.sun.jersey.api.spring.Autowire;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
@@ -63,9 +64,12 @@ public class Database {
 
     private static final int SIZE = 2048;
 
+    private String dbUrl;
+    private String dbUsername;
+    private String dbPwd;
+
 
     private MysqlDataSource ds;
-    private JdbcDataSource h2ds;
     private static final Logger log = LoggerFactory.getLogger(Database.class);
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private IDatasourceManager dsm;
@@ -95,156 +99,134 @@ public class Database {
     }
 
     private void initDB() {
-        String url = servletContext.getInitParameter("db.url");
-        String user = servletContext.getInitParameter("db.user");
-        String pword = servletContext.getInitParameter("db.password");
         ds = new MysqlDataSource();
-        ds.setURL(url);
-        ds.setUser(user);
-        ds.setPassword(pword);
-
-        String h2url = servletContext.getInitParameter("foodmart.url");
-        String h2user = servletContext.getInitParameter("foodmart.user");
-        String h2pword = servletContext.getInitParameter("foodmart.password");
-        h2ds = new JdbcDataSource();
-        h2ds.setURL(h2url);
-        h2ds.setUser(h2user);
-        h2ds.setPassword(h2pword);
+        ds.setURL(dbUrl);
+        ds.setUser(dbUsername);
+        ds.setPassword(dbPwd);
     }
 
     private void loadFoodmart() throws SQLException {
-        String url = servletContext.getInitParameter("foodmart.url");
-        String user = servletContext.getInitParameter("foodmart.user");
-        String pword = servletContext.getInitParameter("foodmart.password");
-        if(url!=null && !url.equals("${foodmart_url}")) {
-            JdbcDataSource ds2 = new JdbcDataSource();
-            ds2.setURL(dsm.getFoodmarturl());
-            ds2.setUser(user);
-            ds2.setPassword(pword);
+        JdbcDataSource ds2 = new JdbcDataSource();
+        ds2.setURL(dsm.getFoodmarturl());
+        ds2.setUser("sa");
+//        ds2.setPassword("");
 
-            Connection c = ds2.getConnection();
-            DatabaseMetaData dbm = c.getMetaData();
-            ResultSet tables = dbm.getTables(null, null, "account", null);
+        Connection c = ds2.getConnection();
+        DatabaseMetaData dbm = c.getMetaData();
+        ResultSet tables = dbm.getTables(null, null, "account", null);
 
-            if (!tables.next()) {
-                // Table exists
-                Statement statement = c.createStatement();
+        if (!tables.next()) {
+            // Table exists
+            Statement statement = c.createStatement();
 
-                statement.execute("RUNSCRIPT FROM '"+dsm.getFoodmartdir()+"/foodmart_h2.sql'");
+            statement.execute("RUNSCRIPT FROM '"+dsm.getFoodmartdir()+"/foodmart_h2.sql'");
 
-                statement.execute("alter table \"time_by_day\" add column \"date_string\" varchar(30);"
-                                  + "update \"time_by_day\" "
-                                  + "set \"date_string\" = TO_CHAR(\"the_date\", 'yyyy/mm/dd');");
-                String schema = null;
-                try {
-                    schema = readFile(dsm.getFoodmartschema(), StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                    log.error("Can't read schema file",e);
-                }
-                try {
-                    dsm.addSchema(schema, "/datasources/foodmart4.xml", null);
-                } catch (Exception e) {
-                    log.error("Can't add schema file to repo", e);
-                }
-                Properties p = new Properties();
-                p.setProperty("driver", "mondrian.olap4j.MondrianOlap4jDriver");
-                p.setProperty("location", "jdbc:mondrian:Jdbc=jdbc:h2:"+dsm.getFoodmartdir()+"/foodmart;"+
-                "Catalog=mondrian:///datasources/foodmart4.xml;JdbcDrivers=org.h2.Driver");
-                p.setProperty("username", "sa");
-                p.setProperty("password", "");
-                p.setProperty("id", "4432dd20-fcae-11e3-a3ac-0800200c9a66");
-                SaikuDatasource ds = new SaikuDatasource("foodmart", SaikuDatasource.Type.OLAP, p);
-
-                try {
-                    dsm.addDatasource(ds);
-                } catch (Exception e) {
-                    log.error("Can't add data source to repo", e);
-                }
-
-
-
-            } else {
-                Statement statement = c.createStatement();
-
-                statement.executeQuery("select 1");
+            statement.execute("alter table \"time_by_day\" add column \"date_string\" varchar(30);"
+                              + "update \"time_by_day\" "
+                              + "set \"date_string\" = TO_CHAR(\"the_date\", 'yyyy/mm/dd');");
+            String schema = null;
+            try {
+                schema = readFile(dsm.getFoodmartschema(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                log.error("Can't read schema file",e);
             }
+            try {
+                dsm.addSchema(schema, "/datasources/foodmart4.xml", null);
+            } catch (Exception e) {
+                log.error("Can't add schema file to repo", e);
+            }
+            Properties p = new Properties();
+            p.setProperty("driver", "mondrian.olap4j.MondrianOlap4jDriver");
+            p.setProperty("location", "jdbc:mondrian:Jdbc=jdbc:h2:"+dsm.getFoodmartdir()+"/foodmart;"+
+            "Catalog=mondrian:///datasources/foodmart4.xml;JdbcDrivers=org.h2.Driver");
+            p.setProperty("username", "sa");
+            p.setProperty("password", "");
+            p.setProperty("id", "4432dd20-fcae-11e3-a3ac-0800200c9a66");
+            SaikuDatasource ds = new SaikuDatasource("foodmart", SaikuDatasource.Type.OLAP, p);
+
+            try {
+                dsm.addDatasource(ds);
+            } catch (Exception e) {
+                log.error("Can't add data source to repo", e);
+            }
+
+
+
+        } else {
+            Statement statement = c.createStatement();
+
+            statement.executeQuery("select 1");
         }
     }
 
     private void loadEarthquakes() throws SQLException {
-        String url = servletContext.getInitParameter("earthquakes.url");
-        String user = servletContext.getInitParameter("earthquakes.user");
-        String pword = servletContext.getInitParameter("earthquakes.password");
+        JdbcDataSource ds3 = new JdbcDataSource();
+        ds3.setURL(dsm.getEarthquakeUrl());
+        ds3.setUser("sa");
+//            ds3.setPassword("");
 
-        if (url != null && !url.equals("${earthquake_url}")) {
-            JdbcDataSource ds3 = new JdbcDataSource();
-            ds3.setURL(dsm.getEarthquakeUrl());
-            ds3.setUser(user);
-            ds3.setPassword(pword);
+        Connection c = ds3.getConnection();
+        DatabaseMetaData dbm = c.getMetaData();
+        ResultSet tables = dbm.getTables(null, null, "earthquakes", null);
+        String schema = null;
 
-            Connection c = ds3.getConnection();
-            DatabaseMetaData dbm = c.getMetaData();
-            ResultSet tables = dbm.getTables(null, null, "earthquakes", null);
-            String schema = null;
+        if (!tables.next()) {
+            Statement statement = c.createStatement();
 
-            if (!tables.next()) {
-                Statement statement = c.createStatement();
-
-                statement.execute("RUNSCRIPT FROM '" + dsm.getEarthquakeDir() + "/earthquakes.sql'");
-                statement.executeQuery("select 1");
+            statement.execute("RUNSCRIPT FROM '" + dsm.getEarthquakeDir() + "/earthquakes.sql'");
+            statement.executeQuery("select 1");
 
 
-                try {
-                    schema = readFile(dsm.getEarthquakeSchema(), StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                    log.error("Can't read schema file", e);
-                }
-                try {
-                    dsm.addSchema(schema, "/datasources/earthquakes.xml", null);
-                } catch (Exception e) {
-                    log.error("Can't add schema file to repo", e);
-                }
-                Properties p = new Properties();
-                p.setProperty("advanced", "true");
-
-                p.setProperty("driver", "mondrian.olap4j.MondrianOlap4jDriver");
-                p.setProperty("location",
-                    "jdbc:mondrian:Jdbc=jdbc:h2:" + dsm.getEarthquakeDir() + "/earthquakes;MODE=MySQL;" +
-                    "Catalog=mondrian:///datasources/earthquakes.xml;JdbcDrivers=org.h2.Driver");
-                p.setProperty("username", "sa");
-                p.setProperty("password", "");
-                p.setProperty("id", "4432dd20-fcae-11e3-a3ac-0800200c9a67");
-                SaikuDatasource ds = new SaikuDatasource("earthquakes", SaikuDatasource.Type.OLAP, p);
-
-                try {
-                    dsm.addDatasource(ds);
-                } catch (Exception e) {
-                    log.error("Can't add data source to repo", e);
-                }
-
-                try {
-                    dsm.saveInternalFile("/homes/home:admin/sample_reports", null, null);
-                    String exts[] = {"saiku"};
-                    Iterator<File> files =
-                        FileUtils.iterateFiles(new File("../webapps/saiku/data/sample_reports"), exts, false);
-
-                    while(files.hasNext()){
-                        File f = files.next();
-                        dsm.saveInternalFile("/homes/home:admin/sample_reports/"+f.getName(),FileUtils.readFileToString(f
-                                .getAbsoluteFile()), null);
-                        files.remove();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+            try {
+                schema = readFile(dsm.getEarthquakeSchema(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                log.error("Can't read schema file", e);
             }
-            else {
-                Statement statement = c.createStatement();
-
-                statement.executeQuery("select 1");
+            try {
+                dsm.addSchema(schema, "/datasources/earthquakes.xml", null);
+            } catch (Exception e) {
+                log.error("Can't add schema file to repo", e);
             }
+            Properties p = new Properties();
+            p.setProperty("advanced", "true");
+
+            p.setProperty("driver", "mondrian.olap4j.MondrianOlap4jDriver");
+            p.setProperty("location",
+                "jdbc:mondrian:Jdbc=jdbc:h2:" + dsm.getEarthquakeDir() + "/earthquakes;MODE=MySQL;" +
+                "Catalog=mondrian:///datasources/earthquakes.xml;JdbcDrivers=org.h2.Driver");
+            p.setProperty("username", "sa");
+            p.setProperty("password", "");
+            p.setProperty("id", "4432dd20-fcae-11e3-a3ac-0800200c9a67");
+            SaikuDatasource ds = new SaikuDatasource("earthquakes", SaikuDatasource.Type.OLAP, p);
+
+            try {
+                dsm.addDatasource(ds);
+            } catch (Exception e) {
+                log.error("Can't add data source to repo", e);
+            }
+
+            try {
+                dsm.saveInternalFile("/homes/home:admin/sample_reports", null, null);
+                String exts[] = {"saiku"};
+                Iterator<File> files =
+                    FileUtils.iterateFiles(new File("../webapps/saiku/data/sample_reports"), exts, false);
+
+                while(files.hasNext()){
+                    File f = files.next();
+                    dsm.saveInternalFile("/homes/home:admin/sample_reports/"+f.getName(),FileUtils.readFileToString(f
+                            .getAbsoluteFile()), null);
+                    files.remove();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        else {
+            Statement statement = c.createStatement();
+
+            statement.executeQuery("select 1");
         }
     }
 
@@ -494,5 +476,29 @@ public class Database {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public void setDbUrl(String dbUrl) {
+        this.dbUrl = dbUrl;
+    }
+
+    public String getDbUsername() {
+        return dbUsername;
+    }
+
+    public void setDbUsername(String dbUsername) {
+        this.dbUsername = dbUsername;
+    }
+
+    public String getDbPwd() {
+        return dbPwd;
+    }
+
+    public void setDbPwd(String dbPwd) {
+        this.dbPwd = dbPwd;
     }
 }

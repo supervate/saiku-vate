@@ -89,7 +89,7 @@ Backbone.sync = function(method, model, options) {
         if (Settings.ERRORS < Settings.ERROR_TOLERANCE) {
           Saiku.session.logout();
         } else {
-          Saiku.ui.block("Communication problem with the server. Please reload the application...");
+          Saiku.ui.block("与服务器通信出现异常.请刷新页面...(多次刷新无效，则可能是服务器关闭，请理系管理员)");
         }
     };
     var statuscode = {

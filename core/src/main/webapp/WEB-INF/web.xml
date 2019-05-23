@@ -10,45 +10,10 @@
 		<param-name>encoding</param-name>
 		<param-value>UTF-8</param-value>
 	</context-param>
-	<context-param>
-		<param-name>db.url</param-name>
-		<param-value>jdbc:mysql://10.0.0.250:3306/saiku</param-value>
-	</context-param>
-	<context-param>
-		<param-name>db.user</param-name>
-		<param-value>root</param-value>
-    </context-param>
-    <context-param>
-        <param-name>db.password</param-name>
-        <param-value>123456</param-value>
-    </context-param>
+
     <context-param>
         <param-name>db.encryptpassword</param-name>
         <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>foodmart.url</param-name>
-        <param-value>jdbc:h2:../webapps/saiku/data/foodmart;MODE=MySQL</param-value>
-    </context-param>
-    <context-param>
-        <param-name>foodmart.user</param-name>
-        <param-value>sa</param-value>
-    </context-param>
-    <context-param>
-        <param-name>foodmart.password</param-name>
-        <param-value></param-value>
-    </context-param>
-    <context-param>
-        <param-name>earthquakes.url</param-name>
-        <param-value>jdbc:h2:../webapps/saiku/data/earthquakes;MODE=MySQL</param-value>
-    </context-param>
-    <context-param>
-        <param-name>earthquakes.user</param-name>
-        <param-value>sa</param-value>
-    </context-param>
-    <context-param>
-        <param-name>earthquakes.password</param-name>
-        <param-value></param-value>
     </context-param>
     <context-param>
         <param-name>db.tcpServer</param-name>
