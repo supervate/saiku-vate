@@ -8,7 +8,7 @@ Saiku.AdminConsole = {
             tab.select();
         }
         else {
-            Saiku.tabs.add(new AdminConsole());
+            Saiku.tabs.add(new dataAdminConsole());
         }
 
         return false;
@@ -965,6 +965,7 @@ var AdminConsole = Backbone.View.extend({
                 contentType: 'application/json',
                 success: function() {
                     self.fetch_datasources();
+                    layer.msg("数据源保存成功！");
                     self.$el.find('.user_info').html('');
                 },
                 error: function(data, xhr) {
@@ -1124,8 +1125,7 @@ var AdminConsole = Backbone.View.extend({
         var path = $currentTarget.attr('href').replace('#', '');
 
         var ds = this.datasources.get(path);
-
-        ds.refresh();
+        var result = ds.refresh();
     },
     advanced_url : function(event){
         event.preventDefault();
@@ -1388,9 +1388,24 @@ var Schemas = Backbone.Collection.extend({
 })
 var Connection = Backbone.Model.extend({
     refresh: function(){
+		var loadIndex = layer.load(1, {
+			shade: [0.1,'#fff'] //0.1透明度的白色背景
+		});
         $.ajax({
             type: 'GET',
-            url: Settings.REST_URL+AdminUrl+"/datasources/"+this.get("connectionname")+"/refresh"
+            url: Settings.REST_URL+AdminUrl+"/datasources/"+this.get("connectionname")+"/refresh",
+			success:function (data) {
+            	layer.close(loadIndex);
+				layer.msg("刷新成功！");
+			},
+			error:function(err){
+				layer.close(loadIndex);
+				var confirmIndex = layer.confirm("刷新出错！错误原因:"+err.responseText, {
+					btn: ['确定'] //按钮
+				}, function(){
+					layer.close(confirmIndex);
+				});
+			}
         });
     }
 });
@@ -1414,7 +1429,7 @@ var Connections = Backbone.Collection.extend({
         $.ajax({
             type: 'GET',
             //url: AdminUrl+"/datasources/"+this.connectionname+"/refresh"
-            url: Settings.REST_URL + AdminUrl + "/datasources"
+            url: Settings.REST_URL + AdminUrl + "/datasources",
         });
     }
 });

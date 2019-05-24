@@ -828,74 +828,74 @@
     </dependencies>
   </dependencyManagement>
 
-  <repositories>
-    <repository>
-      <id>Analytical Labs Repo</id>
-      <name>Analytical Labs Repo-releases</name>
-      <url>http://repo.meteorite.bi/repository/alabs-release-local/</url>
-    </repository>
-    <repository>
-      <id>Analytical Labs snapshots</id>
-      <name>Analytical Labs Repo-releases</name>
-      <url>http://repo.meteorite.bi/repository/alabs-snapshot-local/</url>
-    </repository>
-    <repository>
-      <id>pentaho-third-party</id>
-      <url>http://nexus.pentaho.org/content/repositories/proxied-3rd-party-releases/</url>
-    </repository>
-    <repository>
-      <id>pentaho-public-release</id>
-      <url>http://nexus.pentaho.org/content/repositories/pentaho-public-release-repos/</url>
-    </repository>
-    <repository>
-      <id>pentaho-snapshot</id>
-      <url>http://nexus.pentaho.org/content/repositories/public-snapshots/</url>
-    </repository>
-    <!--<repository>
-        <id>atlassian2</id>
-        <url>http://repository.opencastproject.org/</url>
-    </repository>-->
-    <repository>
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <layout>default</layout>
-      <url>http://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache</id>
-      <name>Apache repo</name>
-      <layout>default</layout>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
+<!--  <repositories>-->
+<!--    <repository>-->
+<!--      <id>Analytical Labs Repo</id>-->
+<!--      <name>Analytical Labs Repo-releases</name>-->
+<!--      <url>http://repo.meteorite.bi/repository/alabs-release-local/</url>-->
+<!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>Analytical Labs snapshots</id>-->
+<!--      <name>Analytical Labs Repo-releases</name>-->
+<!--      <url>http://repo.meteorite.bi/repository/alabs-snapshot-local/</url>-->
+<!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>pentaho-third-party</id>-->
+<!--      <url>http://nexus.pentaho.org/content/repositories/proxied-3rd-party-releases/</url>-->
+<!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>pentaho-public-release</id>-->
+<!--      <url>http://nexus.pentaho.org/content/repositories/pentaho-public-release-repos/</url>-->
+<!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>pentaho-snapshot</id>-->
+<!--      <url>http://nexus.pentaho.org/content/repositories/public-snapshots/</url>-->
+<!--    </repository>-->
+<!--    &lt;!&ndash;<repository>-->
+<!--        <id>atlassian2</id>-->
+<!--        <url>http://repository.opencastproject.org/</url>-->
+<!--    </repository>&ndash;&gt;-->
+<!--    <repository>-->
+<!--      <id>central</id>-->
+<!--      <name>Maven Repository Switchboard</name>-->
+<!--      <layout>default</layout>-->
+<!--      <url>http://repo1.maven.org/maven2</url>-->
+<!--      <snapshots>-->
+<!--        <enabled>false</enabled>-->
+<!--      </snapshots>-->
+<!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>apache</id>-->
+<!--      <name>Apache repo</name>-->
+<!--      <layout>default</layout>-->
+<!--      <url>https://repository.apache.org/content/repositories/snapshots/</url>-->
+<!--      <snapshots>-->
+<!--        <enabled>true</enabled>-->
+<!--      </snapshots>-->
+<!--    </repository>-->
 
-    <repository>
-      <id>atlassian</id>
-      <name>Atlassian Public</name>
-      <layout>default</layout>
-      <url>https://maven.atlassian.com/content/repositories/atlassian-public</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
+<!--    <repository>-->
+<!--      <id>atlassian</id>-->
+<!--      <name>Atlassian Public</name>-->
+<!--      <layout>default</layout>-->
+<!--      <url>https://maven.atlassian.com/content/repositories/atlassian-public</url>-->
+<!--      <snapshots>-->
+<!--        <enabled>true</enabled>-->
+<!--      </snapshots>-->
+<!--    </repository>-->
 
-    <repository>
-      <id>pentaho-releases</id>
-      <url>http://repository.pentaho.org/artifactory/repo/</url>
-    </repository>
+<!--    <repository>-->
+<!--      <id>pentaho-releases</id>-->
+<!--      <url>http://repository.pentaho.org/artifactory/repo/</url>-->
+<!--    </repository>-->
 
-    <repository>
-      <id>miredot</id>
-      <url>http://nexus.qmino.com/content/repositories/miredot/</url>
-    </repository>
-    <repository>
-      <id>clojars</id>
-      <url>http://clojars.org/repo/</url>
-    </repository>
-  </repositories>
+<!--    <repository>-->
+<!--      <id>miredot</id>-->
+<!--      <url>http://nexus.qmino.com/content/repositories/miredot/</url>-->
+<!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>clojars</id>-->
+<!--      <url>http://clojars.org/repo/</url>-->
+<!--    </repository>-->
+<!--  </repositories>-->
 </project>
