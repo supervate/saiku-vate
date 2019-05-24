@@ -53,6 +53,9 @@ public class ClassPathResourceDatasourceManager implements IDatasourceManager {
   private String foodmartdir;
   private String foodmartschema;
   private String foodmarturl;
+  private String orderDir;
+  private String orderSchema;
+  private String orderUrl;
   private PasswordProvider repopasswordprovider;
   private String oldpassword;
   private String earthquakeurl;
@@ -556,6 +559,36 @@ public class ClassPathResourceDatasourceManager implements IDatasourceManager {
 
   public void setFoodmarturl(String foodmarturl) {
     this.foodmarturl = foodmarturl;
+  }
+
+  @Override
+  public String getOrderDir() {
+    return orderDir;
+  }
+
+  @Override
+  public String getOrderSchema() {
+    return orderSchema;
+  }
+
+  @Override
+  public String getOrderUrl() {
+    return orderUrl;
+  }
+
+  @Override
+  public void setOrderDir(String orderDir) {
+    this.orderDir = orderDir;
+  }
+
+  @Override
+  public void setOrderSchema(String orderSchema) {
+    this.orderSchema = orderSchema;
+  }
+
+  @Override
+  public void setOrderUrl(String orderUrl) {
+      this.orderUrl = orderUrl;
   }
 
   public String getFoodmarturl() {

@@ -104,33 +104,35 @@ public interface IDatasourceManager {
 
     void restoreLegacyFiles(byte[] data);
 
-  String getFoodmartschema();
-
-  void setFoodmartschema(String schema);
-
-  void setFoodmartdir(String dir);
-
-  String getFoodmartdir();
 
   String getDatadir();
 
   void setDatadir(String dir);
 
-  void setFoodmarturl(String foodmarturl);
+  String getFoodmartschema();
+
+  String getFoodmartdir();
 
   String getFoodmarturl();
 
-  String getEarthquakeUrl();
+  void setFoodmartschema(String schema);
 
-  String getEarthquakeDir();
+  void setFoodmartdir(String dir);
 
-  String getEarthquakeSchema();
+  void setFoodmarturl(String foodmarturl);
 
-  void setEarthquakeUrl(String earthquakeUrl);
+  String getOrderDir();
 
-  void setEarthquakeDir(String earthquakeDir);
+  String getOrderSchema();
 
-  void setEarthquakeSchema(String earthquakeSchema);
+  String getOrderUrl();
+
+  void setOrderDir(String schema);
+
+  void setOrderSchema(String dir);
+
+  void setOrderUrl(String foodmarturl);
+
 
   void setExternalPropertiesFile(String file);
 

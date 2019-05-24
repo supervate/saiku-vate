@@ -16,6 +16,7 @@
 package org.saiku.web.rest.resources;
 
 import clover.org.jfree.chart.LegendItemSource;
+import clover.org.jfree.data.jdbc.JDBCPieDataset;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -64,7 +65,7 @@ import javax.ws.rs.core.StreamingOutput;
 @Component
 @Path("/saiku/admin")
 public class AdminResource {
-
+    private static final String ADVANCE_LOCATION_PREFIX="jdbc:mondrian:";
     private DatasourceService datasourceService;
 
     private UserService userService;
@@ -901,22 +902,27 @@ public class AdminResource {
             } catch (IOException e) {
                 return Response.ok("数据源连接失败！数据源详细信息解析失败，请检查后重试！").build();
             }
-            if (advancedProperties.get("driver") == null){
-                return Response.ok("数据源连接失败！请传入数据库驱动类名称！").build();
-            }
             if (advancedProperties.get("location") == null){
-                return Response.ok("数据源连接失败！请传入数据库连接Url(在手动填写栏中，该参数名为location)！").build();
+                return Response.ok("数据源连接失败！请传入数据库连接相关信息(url,驱动等)！(在手动填写栏中，该参数名为location)！").build();
             }
-            if (advancedProperties.get("username") == null){
-                return Response.ok("数据源连接失败！请传入数据库驱动类名称！").build();
+
+            String location = advancedProperties.get("location")+"";
+            if (!location.startsWith("jdbc:mondrian:")){
+                return Response.ok("数据源连接失败！location参数格式填写错误！(location=jdbc:mondrian:Jdbc=xxx;Catalog=xxx;JdbcDrivers=xxx;)").build();
             }
-            if (advancedProperties.get("password") == null){
-                return Response.ok("数据源连接失败！请传入数据库驱动类名称！").build();
+            location = location.replace(ADVANCE_LOCATION_PREFIX,"");
+            Properties JdbcParams = new Properties();
+            String[] params = location.split(";");
+            for (String param : params) {
+                String[] paramInfo = param.split("=");
+                if (paramInfo.length >= 2)
+                JdbcParams.put(paramInfo[0],paramInfo[1]);
             }
-            driverClass = advancedProperties.get("driver")+"";
-            jdbcUrl = advancedProperties.get("location")+"";
+            //注意是大写的J
+            jdbcUrl = JdbcParams.get("Jdbc")+"";
+            driverClass = JdbcParams.get("JdbcDrivers")+"";
             userName = advancedProperties.get("username")+"";
-            pwd = advancedProperties.get("password")+"";
+            pwd = advancedProperties.get("password") + "";
         }else {
             driverClass = connInfoObj.getStr("driver");
             jdbcUrl = connInfoObj.getStr("jdbcurl");

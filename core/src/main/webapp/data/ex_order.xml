@@ -1,0 +1,110 @@
+<Schema name="&#35746;&#21333;">
+	<Cube name="&#35746;&#21333;" caption="&#35746;&#21333;" visible="true" cache="true" enabled="true">
+		<Table name="orders"></Table>
+		<Dimension type="StandardDimension" visible="true" foreignKey="customer_id" highCardinality="false"
+				   name="customer" caption="&#23458;&#25143;">
+			<Hierarchy name="h_customer" visible="true" hasAll="true" primaryKey="customer_id"
+					   caption="&#40664;&#35748;&#23618;&#32423;">
+				<Table name="customer"></Table>
+				<Level name="level_company_name" visible="true" column="company_name" type="String" uniqueMembers="true"
+					   levelType="Regular" hideMemberIf="Never" caption="&#20844;&#21496;&#21517;&#31216;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="StandardDimension" visible="true" foreignKey="customer_id" highCardinality="false"
+				   name="customer_region" caption="&#23458;&#25143;&#21306;&#22495;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="customer_id">
+				<Table name="customer"></Table>
+				<Level name="level_contry" visible="true" column="contry" type="String" uniqueMembers="true"
+					   levelType="Regular" hideMemberIf="Never" caption="&#22269;&#23478;"></Level>
+				<Level name="level_region" visible="true" column="region" type="String" uniqueMembers="true"
+					   levelType="Regular" hideMemberIf="Never" caption="&#21306;&#22495;"></Level>
+				<Level name="level_city" visible="true" column="city" type="String" uniqueMembers="true"
+					   levelType="Regular" hideMemberIf="Never" caption="&#22478;&#24066;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="StandardDimension" visible="true" foreignKey="salesman_id" highCardinality="false"
+				   name="saleman" caption="&#38144;&#21806;&#21592;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="ID">
+				<Table name="saleman"></Table>
+				<Level name="level_name" visible="true" column="name" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#22995;&#21517;"></Level>
+				<Level name="level_job" visible="true" column="job" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#32844;&#20301;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="TimeDimension" visible="true" foreignKey="order_id" highCardinality="false" name="arrival_date"
+				   caption="&#21040;&#36135;&#26085;&#26399;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="order_id">
+				<Table name="v_date"></Table>
+				<Level name="level_year" visible="true" column="the_year" type="Date" uniqueMembers="false"
+					   levelType="TimeYears" hideMemberIf="Never" caption="&#24180;"></Level>
+				<Level name="level_month" visible="true" column="the_month" type="Date" uniqueMembers="false"
+					   levelType="TimeMonths" hideMemberIf="Never" caption="&#26376;"></Level>
+				<Level name="level_day" visible="true" column="the_day" type="Date" uniqueMembers="false"
+					   levelType="TimeDays" hideMemberIf="Never" caption="&#26085;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Measure name="amount" column="amount" datatype="Numeric" aggregator="sum" caption="&#24635;&#39069;"
+				 visible="true"></Measure>
+		<Measure name="freight" column="freight" datatype="Numeric" aggregator="sum" caption="&#36816;&#36153;"
+				 visible="true"></Measure>
+	</Cube>
+	<Cube name="&#35746;&#21333;&#26126;&#32454;" caption="&#35746;&#21333;&#26126;&#32454;" visible="true" cache="true"
+		  enabled="true">
+		<Table name="orderdetails"></Table>
+		<Dimension type="TimeDimension" visible="true" foreignKey="order_id" highCardinality="false" name="arrival_date"
+				   caption="&#21457;&#36135;&#26085;&#26399;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="order_id">
+				<Table name="v_date"></Table>
+				<Level name="level_year" visible="true" column="the_year" type="Date" uniqueMembers="false"
+					   levelType="TimeYears" hideMemberIf="Never" caption="&#24180;"></Level>
+				<Level name="level_month" visible="true" column="the_month" type="Date" uniqueMembers="false"
+					   levelType="TimeMonths" hideMemberIf="Never" caption="&#26376;"></Level>
+				<Level name="level_day" visible="true" column="the_day" type="Date" uniqueMembers="false"
+					   levelType="TimeDays" hideMemberIf="Never" caption="&#26085;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="StandardDimension" visible="true" foreignKey="product_id" highCardinality="false"
+				   name="product" caption="&#20135;&#21697;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="product_id">
+				<Table name="product"></Table>
+				<Level name="product_name" visible="true" column="name" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#20135;&#21697;&#21517;&#31216;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="StandardDimension" visible="true" foreignKey="saleman_id" highCardinality="false"
+				   name="saleman" caption="&#38144;&#21806;&#21592;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="ID">
+				<Table name="saleman"></Table>
+				<Level name="level_name" visible="true" column="name" type="Date" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#22995;&#21517;"></Level>
+				<Level name="level_job" visible="true" column="job" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#32844;&#20301;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="StandardDimension" visible="true" foreignKey="customer_id" highCardinality="false"
+				   name="customer" caption="&#39038;&#23458;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="customer_id">
+				<Table name="customer"></Table>
+				<Level name="customer_name" visible="true" column="company_name" type="String" uniqueMembers="true"
+					   levelType="Regular" hideMemberIf="Never" caption="&#21517;&#31216;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Dimension type="StandardDimension" visible="true" foreignKey="customer_id" highCardinality="false"
+				   name="customer_region" caption="&#23458;&#25143;&#21306;&#22495;">
+			<Hierarchy visible="true" hasAll="true" primaryKey="customer_id">
+				<Table name="customer"></Table>
+				<Level name="level_contry" visible="true" column="contry" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#22269;&#23478;"></Level>
+				<Level name="level_region" visible="true" column="region" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#21306;&#22495;"></Level>
+				<Level name="level_city" visible="true" column="city" type="String" uniqueMembers="false"
+					   levelType="Regular" hideMemberIf="Never" caption="&#22478;&#24066;"></Level>
+			</Hierarchy>
+		</Dimension>
+		<Measure name="amount" column="amount" datatype="Numeric" aggregator="sum" caption="&#37329;&#39069;"
+				 visible="true"></Measure>
+		<Measure name="num" column="num" datatype="Numeric" aggregator="sum" caption="&#25968;&#37327;"
+				 visible="true"></Measure>
+	</Cube>
+</Schema>

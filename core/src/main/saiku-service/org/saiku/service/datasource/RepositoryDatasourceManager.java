@@ -74,11 +74,11 @@ public class RepositoryDatasourceManager implements IDatasourceManager, Applicat
     private String foodmartdir;
     private String foodmartschema;
     private String foodmarturl;
+    private String orderDir;
+    private String orderSchema;
+    private String orderUrl;
     private PasswordProvider repopasswordprovider;
     private String oldpassword;
-    private String earthquakeurl;
-    private String earthquakedir;
-    private String earthquakeschema;
     private String defaultRole;
     private String externalparameters;
     private String type;
@@ -670,31 +670,6 @@ public class RepositoryDatasourceManager implements IDatasourceManager, Applicat
         return foodmarturl;
     }
 
-    public String getEarthquakeUrl() {
-        return earthquakeurl;
-    }
-
-    public String getEarthquakeDir() {
-        return earthquakedir;
-    }
-
-    public String getEarthquakeSchema() {
-        return earthquakeschema;
-    }
-
-
-    public void setEarthquakeUrl(String earthquakeurl) {
-        this.earthquakeurl = earthquakeurl;
-    }
-
-    public void setEarthquakeDir(String earthquakedir) {
-        this.earthquakedir = earthquakedir;
-    }
-
-    public void setEarthquakeSchema(String earthquakeschema) {
-        this.earthquakeschema = earthquakeschema;
-    }
-
     @Override
     public void setExternalPropertiesFile(String file) {
         this.externalparameters = file;
@@ -969,6 +944,36 @@ public class RepositoryDatasourceManager implements IDatasourceManager, Applicat
         }
 
         return props;
+    }
+
+    @Override
+    public String getOrderDir() {
+        return orderDir;
+    }
+
+    @Override
+    public void setOrderDir(String orderDir) {
+        this.orderDir = orderDir;
+    }
+
+    @Override
+    public String getOrderSchema() {
+        return orderSchema;
+    }
+
+    @Override
+    public void setOrderSchema(String orderSchema) {
+        this.orderSchema = orderSchema;
+    }
+
+    @Override
+    public String getOrderUrl() {
+        return orderUrl;
+    }
+
+    @Override
+    public void setOrderUrl(String orderUrl) {
+        this.orderUrl = orderUrl;
     }
 }
 

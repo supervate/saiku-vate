@@ -38,7 +38,7 @@ var AdminConsole = Backbone.View.extend({
         'click .refresh_button':'refresh_datasource',
         'click .test_datasource_button':'test_datasource',
         'click .advancedurl' :'advanced_url',
-        'click .simpleurl' :'simple_url',
+        'click .simple_connection_btn' :'simple_connection_btn',
         'click .getdatasources' :'get_data_sources',
         'change .drivertype' : 'change_driver',
         'click .create_schema': 'create_schema',
@@ -513,7 +513,7 @@ var AdminConsole = Backbone.View.extend({
         "<div class='advconnection' style='display:none;'><textarea name='adv_text' class='form-control' rows='10' cols='75'><%= conn.advanced %></textarea></div>" +
         "<br/><br/>" +
 		"<a href='' name='advancedurl' class='advancedurl btn btn-default hide'>高级参数</a>" +
-		"<a href='' name='simpleurl' class='simpleurl btn btn-default hide'>简单参数</a>" +
+		"<a href='' name='simple_connection_btn' class='simple_connection_btn btn btn-default hide'>简单参数</a>" +
         "<% if(Settings.DATA_SOURCES_LOOKUP) { %><a href='' name='getdatasources' class='btn btn-default getdatasources'>Data Sources</a> <% } %>" +
         "<a href='<%= conn.id%>' class='user_button btn btn-danger form_button remove_datasource hide'>删除</a>" +
         "<a href='<%= conn.id%>' class='user_button form_button btn btn-default save_datasource'>保存</a>" +
@@ -830,7 +830,8 @@ var AdminConsole = Backbone.View.extend({
         var html = this.datasourcetemplate({conn: conn, schemas: s.models, properties: this.pkeys});
 
         $(this.el).find('.user_info').html(html);
-        Saiku.events.trigger('admin:viewdatasource', {
+		$(this.el).find(".advancedurl").show();
+		Saiku.events.trigger('admin:viewdatasource', {
             admin: this
         });
 
@@ -1130,15 +1131,15 @@ var AdminConsole = Backbone.View.extend({
         event.preventDefault();
         $(this.el).find(".simpleConnection").hide();
         $(this.el).find(".advancedurl").hide();
-        $(this.el).find(".simpleurl").show();
+        $(this.el).find(".simple_connection_btn").show();
         $(this.el).find(".advconnection").show();
     },
-	simple_url : function(event){
+	simple_connection_btn : function(event){
         event.preventDefault();
-        $(this.el).find(".simpleConnection").show();
-        $(this.el).find(".advancedurl").show();
-        $(this.el).find(".simpleurl").hide();
-        $(this.el).find(".advconnection").hide();
+		$(this.el).find(".advconnection").hide();
+		$(this.el).find(".simple_connection_btn").hide();
+		$(this.el).find(".simpleConnection").show();
+		$(this.el).find(".advancedurl").show();
     },
     get_data_sources: function(event) {
         event.preventDefault();

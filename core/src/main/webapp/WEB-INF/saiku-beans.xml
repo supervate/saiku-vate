@@ -53,9 +53,9 @@
         <property name="foodmartdir" value="${foodmartrepo}"/>
         <property name="foodmartschema" value="	${foodmartschema}"/>
         <property name="foodmarturl" value="${foodmarturl}"/>
-        <property name="earthquakeDir" value="${earthquakerepo}"/>
-        <property name="earthquakeSchema" value="${earthquakeschema}"/>
-        <property name="earthquakeUrl" value="${earthquakeurl}"/>
+        <property name="orderDir" value="${orderRepo}"/>
+        <property name="orderSchema" value="${orderSchema}"/>
+        <property name="orderUrl" value="${orderUrl}"/>
         <property name="repoPasswordProvider" ref ="repoPasswordProviderBean"/>
         <property name="defaultRole" value="${default.role}"/>
         <property name="externalPropertiesFile" value="${external.properties.file}"/>
