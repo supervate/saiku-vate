@@ -56,6 +56,7 @@ import java.util.concurrent.*;
 import javax.jcr.RepositoryException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -485,9 +486,10 @@ public class AdminResource {
     @Produces( {"application/json"})
     @Path("/users/{id}")
     @ReturnType("org.saiku.database.dto.SaikuUser")
-    public Response getUserDetails(@PathParam("id") int id,@QueryParam("actk") String actk) {
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+    public Response getUserDetails(@PathParam("id") int id, @QueryParam("actk") String actk) {
+        if(!userService.isAdmin()){
+            if (StringUtils.isBlank(actk) || !isAccessAble(actk))
+                return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.ok().entity(userService.getUser(id)).build();
     }
@@ -504,9 +506,10 @@ public class AdminResource {
     @Consumes("application/json")
     @Path("/users/{username}")
     @ReturnType("org.saiku.database.dto.SaikuUser")
-    public Response updateUserDetails(SaikuUser jsonString, @PathParam("username") String userName,@FormParam("actk") String actk) {
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+    public Response updateUserDetails(SaikuUser jsonString, @PathParam("username") String userName,@QueryParam("actk") String actk) {
+        if(!userService.isAdmin()){
+            if (StringUtils.isBlank(actk) || !isAccessAble(actk))
+                return Response.status(Response.Status.FORBIDDEN).build();
         }
         if(jsonString.getPassword() == null || jsonString.getPassword().equals("")) {
             return Response.ok().entity(userService.updateUser(jsonString, false)).build();
@@ -523,12 +526,12 @@ public class AdminResource {
      * @return A response containing the user object.
      */
     @POST
-    @Consumes("application/x-www-form-urlencoded")
+    @Consumes("application/json")
     @Path("/users")
     @ReturnType("org.saiku.database.dto.SaikuUser")
-    public Response createUserDetails(SaikuUser jsonString,@FormParam("actk") String actk) {
-
-        if(!userService.isAdmin() && !isAccessAble(actk)){
+    public Response createUserDetails(SaikuUser jsonString,@QueryParam("actk") String actk) {
+        if(!userService.isAdmin()){
+            if (StringUtils.isBlank(actk) || !isAccessAble(actk))
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.ok().entity(userService.addUser(jsonString)).build();

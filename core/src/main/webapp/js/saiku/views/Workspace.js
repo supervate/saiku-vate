@@ -84,7 +84,7 @@ var Workspace = Backbone.View.extend({
                 if ( $('body').find('.error_loading_query').length < 1) {
                     var message = (Saiku.i18n && Saiku.i18n.po_file.error_loading_query) ? Saiku.i18n.po_file.error_loading_query : null;
                     if (!message) {
-                        message = "Error Loading Query";
+                        message = "查询加载出错！";
                         $('<span class="i18n error_loading_query">' + message + '</span>').hide().appendTo('body');
                         Saiku.i18n.translate();
                         message = $('.error_loading_query').text();

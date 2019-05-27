@@ -38,15 +38,17 @@
 		<!--去掉iframe跨域限制-->
 		<security:headers>
 		<security:frame-options disabled="true"></security:frame-options>
-	</security:headers>
+		</security:headers>
 		<security:csrf disabled="true"/>
 
 		<security:intercept-url pattern="/serverdocs/**" access="isAnonymous()"/>
 		<security:intercept-url pattern="/rest/saiku/session*" access="isAnonymous() or isFullyAuthenticated()"/>
+		<!--看板使用的接口,单独在方法中做权限控制-->
+		<security:intercept-url pattern="/rest/saiku/*/export/saiku/json" access="isAnonymous()"/>
 		<security:intercept-url pattern="/rest/saiku/api/license/usercount"
 								access="isAnonymous() or isFullyAuthenticated()"/>
-		<security:intercept-url pattern="/rest/**" access="isAnonymous() or isFullyAuthenticated()"/>
-		<security:intercept-url pattern="/json/**" access="isAnonymous() or isFullyAuthenticated()"/>
+		<security:intercept-url pattern="/rest/**" access="isFullyAuthenticated()"/>
+		<security:intercept-url pattern="/json/**" access="isFullyAuthenticated()"/>
 		<security:intercept-url pattern="/WEB-INF/classes/legacy-schema" access="isAnonymous()"/>
 		<security:logout logout-url="/logout"/>
 		<security:http-basic/>

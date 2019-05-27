@@ -35,8 +35,8 @@ var MeasuresModal = Modal.extend({
     },
 
     buttons: [
-        { text: "OK", method: "save" },
-        { text: "Cancel", method: "close" }
+        { text: "确认", method: "save" },
+        { text: "取消", method: "close" }
     ],
 
     addMeasureTemplate: _.template("<form id='measure_form'>" +

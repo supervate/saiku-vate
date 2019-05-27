@@ -45,14 +45,14 @@ var ParentMemberSelectorModal = Modal.extend({
             '<div class="group-elements" style="padding-top: 0;">' +
             '<nav class="breadcrumbs">' +
             '</nav>' +
-            '<span class="loading i18n">Loading...</span>' +
+            /*'<span class="loading i18n">Loading...</span>' +*/
             '</div>' +
             '<% if (Settings.PARENT_MEMBER_DIMENSION||this.select_type!=="parent-member-selector") { %>' +
             '<div class="group-elements">' +
-            '<label for="dimension" class="i18n">Dimension:</label>' +
+            '<label for="dimension" class="i18n">维度:</label>' +
             '<select id="dimension" class="form-control">' +
-            '<optgroup label="Measures">' +
-            '<option value="[Measures].[Measures]" data-dimension="Measures" data-type="calcmember">Measures</option>' +
+            '<optgroup label="度量">' +
+            '<option value="[Measures].[Measures]" data-dimension="Measures" data-type="calcmember">度量</option>' +
             '</optgroup>'+
             '<% _(dimensions).each(function(dimension) { %>' +
             '<optgroup label="<%= dimension.name %>">' +
@@ -65,15 +65,15 @@ var ParentMemberSelectorModal = Modal.extend({
             '</div>' +
             '<% } %>' +
             '<div class="group-elements">' +
-            '<label><span class="i18n">Selected Level:</span> <span class="selected-level"></span></label>' +
+            '<label><span class="i18n">已选择的层级:</span> <span class="selected-level"></span></label>' +
             '</div>' +
             '<div class="group-elements">' +
             '<ul class="members-list">' +
-            '<li class="i18n">Loading...</li>' +
+            /*'<li class="i18n">Loading...</li>' +*/
             '<ul>' +
             '</div>' +
             '<div class="group-elements">' +
-            '<input type="search" class="form-control" id="auto-filter" results="5" placeholder="Autocomplete Filter">' +
+            '<input type="search" class="form-control" id="auto-filter" results="5" placeholder="自动完成过滤">' +
             '</div>' +
             '</form>'
         ),
@@ -86,9 +86,9 @@ var ParentMemberSelectorModal = Modal.extend({
      * @private
      */
     buttons: [
-        { text: 'Add',    method: 'save' },
-        { text: 'Clear',  method: 'clear' },
-        { text: 'Cancel', method: 'close' }
+        { text: '添加',    method: 'save' },
+        { text: '清除',  method: 'clear' },
+        { text: '取消', method: 'close' }
     ],
 
     /**
@@ -119,7 +119,7 @@ var ParentMemberSelectorModal = Modal.extend({
         // Initialize properties
         _.extend(this, args);
         this.workspace = args.workspace;
-        this.options.title = 'Member Selector';
+        this.options.title = '成员选择器';
         if(args.select_type!==undefined) {
             this.select_type = args.select_type;
         }
@@ -262,7 +262,7 @@ var ParentMemberSelectorModal = Modal.extend({
                 .data('uniqueName', data[i].uniqueName)
                 .data('levelUniqueName', data[i].levelUniqueName ? data[i].levelUniqueName : false)
                 .data('currentLevelUnique', data[i].levelUniqueName)
-                .html(data[i].name+"<span class='drill_member' style='float:right;'>Next Level</span>");
+                .html(data[i].name+"<span class='drill_member' style='float:right;'>下一层级</span>");
 
             self.$el.find('.members-list').append($members);
 

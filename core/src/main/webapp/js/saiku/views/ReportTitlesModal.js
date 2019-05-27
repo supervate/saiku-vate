@@ -23,7 +23,7 @@ var ReportTitlesModal = Modal.extend({
   buttons: [
     { text: 'Save', method: 'save' },
     { text: 'Clear', method: 'clear' },
-    { text: 'Cancel', method: 'close' }
+    { text: '取消', method: 'close' }
   ],
 
   message: _.template(

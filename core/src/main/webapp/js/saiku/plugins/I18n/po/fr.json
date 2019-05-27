@@ -126,13 +126,9 @@
    "None":"Aucun",
    "Parameter Name":"Nom du paramètre",
    "OK":"OK",
-<<<<<<< HEAD
    "Cancel":"Abandonner",
-   "Custom...":"Personnalisé",
    "Clear Filter":"Supprimer les filtres",
-=======
    "Custom...":"Personnalisé",
->>>>>>> release-3.15
    "Custom Filter ":"Filtre personnalisé",
    "Filter MDX Expression:":"Expression MDX de filtre :",
    "Insert Member":"Insérer un membre",

@@ -57,8 +57,8 @@ var DataSourcesModal = Modal.extend({
      * @private
      */
     buttons: [
-        { text: 'Add', method: 'add' },
-        { text: 'Cancel', method: 'close' }
+        { text: '添加', method: 'add' },
+        { text: '取消', method: 'close' }
     ],
 
     /**

@@ -35,8 +35,8 @@ var MoveRepositoryObject = Modal.extend({
     },
 
     buttons: [
-        { id: "test", text: "Move", method: "open_query" },
-        { text: "Cancel", method: "close" }
+        { id: "test", text: "移除", method: "open_query" },
+        { text: "取消", method: "close" }
     ],
 
     initialize: function(args) {

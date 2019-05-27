@@ -21,8 +21,8 @@ var WarningModal = Modal.extend({
     type: 'info',
 
     buttons: [
-        { text: 'Okay', method: 'okay' },
-        { text: 'Cancel', method: 'close' }
+        { text: '确认', method: 'okay' },
+        { text: '取消', method: 'close' }
     ],
 
     initialize: function(args) {

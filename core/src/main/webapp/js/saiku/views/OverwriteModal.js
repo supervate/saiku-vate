@@ -23,8 +23,8 @@ var OverwriteModal = Modal.extend({
   message: 'Are you sure you want to overwrite the existing query?',
 
   buttons: [
-    { text: 'Yes', method: 'save' },
-    { text: 'No', method: 'close' }
+    { text: '确定', method: 'save' },
+    { text: '取消', method: 'close' }
   ],
 
   initialize: function(args) {

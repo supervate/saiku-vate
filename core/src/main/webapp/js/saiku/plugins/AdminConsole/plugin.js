@@ -8,7 +8,7 @@ Saiku.AdminConsole = {
             tab.select();
         }
         else {
-            Saiku.tabs.add(new dataAdminConsole());
+            Saiku.tabs.add(new AdminConsole());
         }
 
         return false;
@@ -965,7 +965,7 @@ var AdminConsole = Backbone.View.extend({
                 contentType: 'application/json',
                 success: function() {
                     self.fetch_datasources();
-                    layer.msg("数据源保存成功！");
+                    layer.msg("数据源保存成功！",{time:1.5*1000});
                     self.$el.find('.user_info').html('');
                 },
                 error: function(data, xhr) {

@@ -171,11 +171,11 @@ var CalculatedMemberModal = Modal.extend({
      * @private
      */
     buttons: [
-        { text: 'Add', method: 'save' },
-        { text: 'Update', method: 'save' },
-        { text: 'New', method: 'new' },
-        { text: 'Cancel', method: 'close' },
-        { text: 'Help', method: 'help'}
+        { text: '添加', method: 'save' },
+        { text: '更新', method: 'save' },
+        { text: '新建', method: 'new' },
+        { text: '取消', method: 'close' }
+        /*{ text: 'Help', method: 'help'}*/
     ],
 
     /**

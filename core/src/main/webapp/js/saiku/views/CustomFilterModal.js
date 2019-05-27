@@ -30,23 +30,23 @@ var CustomFilterModal = Modal.extend({
     },
 
     buttons: [
-        { text: "OK", method: "save" },
-        { text: "Cancel", method: "close" }
+        { text: "确认", method: "save" },
+        { text: "取消", method: "close" }
     ],
 
     message: "<form id='custom_filter'>" +
                      "<table border='0px'>" +
-                     "<tr><td class='col0'>Define Filter" +
-                     "<select class='form-control function'><option>Select a Function...</option>" +
+                     "<tr><td class='col0'>定义过滤" +
+                     "<select class='form-control function'><option>选择一个函数...</option>" +
                      "<option value='TopCount'>TopCount</option>" +
                         "<option value='TopPercent'>TopPercent</option><option value='TopSum'>TopSum</option>" +
                         "<option value='BottomCount'>BottomCount</option><option value='BottomPercent'>BottomPercent</option>" +
                         "<option value='BottomSum'>BottomSum</option></select></td></tr>" +
                      "<tr class='filter_details hide'><td><span class='ntype'></span>" +
                      "<input class='n form-control' /></td></tr>" +
-                     "<tr class='filter_details hide'><td>Sort by" +
-                     "<select class='type form-control'><option value='measure'>Measure</option>" +
-                     "<option value='custom'>MDX Expression</option></select></td></tr>" +
+                     "<tr class='filter_details hide'><td>排序规则:" +
+                     "<select class='type form-control'><option value='measure'>度量</option>" +
+                     "<option value='custom'>MDX表达式</option></select></td></tr>" +
                      "<tr class='filter_details hide sortingoption'><td>&nbsp; &nbsp;</td>" +
                      "</table></form>",
 
@@ -66,12 +66,18 @@ var CustomFilterModal = Modal.extend({
         this.n = args.n;
         this.sortliteral = args.sortliteral;
         this.isMdx = true;
+		this.axisChineseName = this.axis;
+		switch (this.axis) {
+			case "COLUMNS":this.axisChineseName = "列" ;break;
+			case "ROWS":this.axisChineseName = "行" ;break;
+			case "FILTER":this.axisChineseName = "" ;break;
+		}
         _.bindAll(this, "build_measures_list", "save");
 
         this.measure_list = this.build_measures_list();
 
         _.extend(this.options, {
-            title: "Custom Filter for " + this.axis
+            title: "自定义" + this.axisChineseName + "过滤"
         });
 
         this.bind( 'open', function( ) {

@@ -117,9 +117,9 @@ var ChartEditor = Modal.extend({
      * @private
      */
     buttons: [
-        { text: 'Add Color Palette', method: 'add_color_palette' },
-        { text: 'Save', method: 'save' },
-        { text: 'Cancel', method: 'close' }
+        { text: '添加调色板', method: 'add_color_palette' },
+        { text: '保存', method: 'save' },
+        { text: '取消', method: 'close' }
     ],
 
     /**

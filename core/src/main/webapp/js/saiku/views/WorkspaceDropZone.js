@@ -584,16 +584,16 @@ var WorkspaceDropZone = Backbone.View.extend({
                 var citems = {
                         "filter" : {name: "Filter", i18n: true, items:
                          {
-                                "customfilter": {name: "自定义...", i18n: true },
+                                "customfilter": {name: "自定义", i18n: true },
                                 "clearfilter": {name: "清除过滤规则", i18n: true }
                          }},
                         "limit" : {name: "查询数限制", i18n: true, items:
                         {
                                 "TopCount###SEPARATOR###10": {name: "查询前10条", i18n: true },
                                 "BottomCount###SEPARATOR###10": {name: "查询后10条", i18n: true },
-                                "TopCountQuick" : { name: "通过xxx查询前10条", i18n: true, items: addFun(items, "TopCount") },
-                                "BottomCountQuick" : { name: "通过xxx查询后10条", i18n: true, items: addFun(items, "BottomCount") },
-                                "customtop" : {name: "自定义数量限制...", i18n: true },
+                                "TopCountQuick" : { name: "查询前10条", i18n: true, items: addFun(items, "TopCount") },
+                                "BottomCountQuick" : { name: "查询后10条", i18n: true, items: addFun(items, "BottomCount") },
+                                "customtop" : {name: "自定义数量限制", i18n: true },
                                 "clearlimit" : {name: "清除限制规则", i18n: true }
                          }},
                         "sort" : {name: "排序", i18n: true, items:

@@ -29,9 +29,9 @@ var FilterModal = Modal.extend({
     },
 
     buttons: [
-        { text: "OK", method: "save" },
-        { text: "Cancel", method: "close" },
-        { text: "Help", method: "help"}
+        { text: "确认", method: "save" },
+        { text: "取消", method: "close" }
+        /*{ text: "Help", method: "help"}*/
     ],
 
     message: "",
@@ -40,12 +40,12 @@ var FilterModal = Modal.extend({
         var c = "<div class='sidebar'><table" +
         " border='0px'>";
         if (this.expressionType == "Order") {
-            c += "<tr><td class='col1'><label>Sort Type</label> <select class='form-control' id='fun'><option>ASC</option><option>BASC</option><option>DESC</option><option>BDESC</option> </select></td></tr>";
+            c += "<tr><td class='col1'><label>排序类型</label> <select class='form-control' id='fun'><option>ASC</option><option>BASC</option><option>DESC</option><option>BDESC</option> </select></td></tr>";
         }
-        c += "<tr><td class='col1'>" + this.expressionType + " MDX Expression:</td></tr>" +
+        c += "<tr><td class='col1'>" + this.expressionTypeChineseName + "MDX表达式:</td></tr>" +
              "<tr><td class='col1' style='width:380px'><div class='filter-editor' style='width:380px' id='"+this.id+"'></div></td></tr>" +
              "</table>" +
-            "<a href='#' class='form_button btn btn-default insert-member'>Insert Member</a></div>";
+            "<a href='#' class='form_button btn btn-default insert-member'>添加成员</a></div>";
         return c;
     },
 
@@ -61,10 +61,21 @@ var FilterModal = Modal.extend({
         this.success = args.success;
         this.expression = args.expression;
         this.expressionType = args.expressionType;
-        _.bindAll(this, "save", "expression_text");
+        this.expressionTypeChineseName = this.expressionType;
+        switch (this.expressionType) {
+			case "Order":this.expressionTypeChineseName = "排序" ;break;
+			case "Filter":this.expressionTypeChineseName = "过滤" ;break;
+		}
+		this.axisChineseName = this.axis;
+		switch (this.axis) {
+			case "COLUMNS":this.axisChineseName = "列" ;break;
+			case "ROWS":this.axisChineseName = "行" ;break;
+			case "FILTER":this.axisChineseName = "" ;break;
+		}
+		_.bindAll(this, "save", "expression_text");
 
         _.extend(this.options, {
-            title: "Custom " + this.expressionType + " for " + this.axis
+            title: "自定义" +this.axisChineseName+this.expressionTypeChineseName
         });
 
         this.message = this.expression_text(this.expressionType);
@@ -93,7 +104,7 @@ var FilterModal = Modal.extend({
 
         var alert_msg = "";
         if (typeof this.expression == "undefined" || !this.expression || this.expression === "") {
-            alert_msg += "You have to enter a MDX expression for the " + this.expressionType + " function! ";
+            alert_msg += "MDX表达式内容不能为空！";
             alert(alert_msg);
         } else {
             if (self.expressionType == "Order") {
@@ -110,7 +121,7 @@ var FilterModal = Modal.extend({
 
     error: function() {
         $(this.el).find('dialog_body')
-            .html("Could not add new folder");
+            .html("无法添加新的文件夹！");
     },
 
     /**
@@ -147,7 +158,7 @@ var FilterModal = Modal.extend({
                 }
             })).render().open();
 
-            this.$el.parents('.ui-dialog').find('.ui-dialog-title').text('Custom Filter');
+            this.$el.parents('.ui-dialog').find('.ui-dialog-title').text('自定义过滤');
 
 
     },

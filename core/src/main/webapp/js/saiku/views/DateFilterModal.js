@@ -21,11 +21,11 @@ var DateFilterModal = Modal.extend({
 	type: 'date-filter',
 
 	buttons: [
-		{ text: 'Clear', method: 'clear_date_filter' },
-		{ text: 'Save', method: 'save' },
-		{ text: 'Open Standard Filter', method: 'open_standard_filter' },
-		{ text: 'Cancel', method: 'finished' },
-        { text: 'Help', method: 'help' }
+		{ text: '清除', method: 'clear_date_filter' },
+		{ text: '保存', method: 'save' },
+		{ text: '打开标准过滤器', method: 'open_standard_filter' },
+		{ text: '取消', method: 'finished' }
+         /*{ text: 'Help', method: 'help' }*/
 	],
 
 	events: {

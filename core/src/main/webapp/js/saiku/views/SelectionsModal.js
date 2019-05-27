@@ -378,7 +378,8 @@ var SelectionsModal = Modal.extend({
         $(this.el).find('.items_size').text(this.available_members.length);
 
         if (this.members_search_server) {
-            $(this.el).find('.warning').text("More items available than listed. Pre-Filter on server.");
+            // $(this.el).find('.warning').text("More items available than listed. Pre-Filter on server.");
+            $(this.el).find('.warning').text("没有可选择的项.");
         } else {
             $(this.el).find('.warning').text("");
         }

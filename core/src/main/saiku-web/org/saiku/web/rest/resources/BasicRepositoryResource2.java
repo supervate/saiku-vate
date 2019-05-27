@@ -16,6 +16,7 @@
 package org.saiku.web.rest.resources;
 
 
+import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
@@ -46,6 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.sql.Connection;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -278,44 +281,55 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
     }
 
     public boolean updateDataToRqPlatForm(String content, String file, String username, String option) {
-        if (StringUtils.isBlank(rqServerUrl)){
-            //如果rqServerUrl填为空 则不需要与平台交互
-            return true;
-        }
-        switch (option){
-            case "add":{
-                HashMap<String, Object> paramMap = new HashMap<>();
-                paramMap.put("loginName", username);
+        try {
+            if (StringUtils.isBlank(rqServerUrl)) {
+                //如果rqServerUrl填为空 则不需要与平台交互
+                return true;
+            }
+            switch (option) {
+                case "add": {
+                    HashMap<String, Object> paramMap = new HashMap<>();
+                    paramMap.put("loginName", username);
 //                paramMap.put("content", content);
-                paramMap.put("file", file);
-                paramMap.put("timestamp", new Date().getTime());
-                String result= HttpUtil.post(rqServerUrl+addQueryApi+"?_="+new Date().getTime(), paramMap);
-                JSONObject resultObj = JSONUtil.parseObj(result);
-                int code = resultObj.getInt("code");
-                if (code == 0){
-                    return true;
-                }else {
-                    log.error("调用平台接口,添加查询方案记录失败！Cause:{}",resultObj.get("msg"));
-                    return false;
+                    paramMap.put("file", file);
+                    paramMap.put("timestamp", new Date().getTime());
+                    String result = HttpUtil.post(rqServerUrl + addQueryApi + "?_=" + new Date().getTime(), paramMap);
+                    JSONObject resultObj = JSONUtil.parseObj(result);
+                    int code = resultObj.getInt("code");
+                    if (code == 0) {
+                        return true;
+                    } else {
+                        log.error("调用平台接口,添加查询方案记录失败！Cause:{}", resultObj.get("msg"));
+                        return false;
+                    }
                 }
-            }
-            case "delete":{
-                HashMap<String, Object> paramMap = new HashMap<>();
-                paramMap.put("file", file);
-                String result= HttpUtil.post(rqServerUrl+deleteQueryApi, paramMap);
-                JSONObject resultObj = JSONUtil.parseObj(result);
-                int code = resultObj.getInt("code");
-                if (code == 0){
-                    return true;
-                }else {
-                    log.error("调用平台接口,删除查询方案记录失败！Cause:{}",resultObj.get("msg"));
-                    return false;
+                case "delete": {
+                    HashMap<String, Object> paramMap = new HashMap<>();
+                    paramMap.put("file", file);
+                    String result = HttpUtil.post(rqServerUrl + deleteQueryApi, paramMap);
+                    JSONObject resultObj = JSONUtil.parseObj(result);
+                    int code = resultObj.getInt("code");
+                    if (code == 0) {
+                        return true;
+                    } else {
+                        log.error("调用平台接口,删除查询方案记录失败！Cause:{}", resultObj.get("msg"));
+                        return false;
+                    }
                 }
+                default:
+                    throw new IllegalStateException("Unexpected value: " + option);
             }
-            default:
-                throw new IllegalStateException("Unexpected value: " + option);
+        }
+        catch (HttpException c){
+            log.error("调用平台接口，连接失败！查询文件名为:{} 错误消息:{}",file,c.getMessage());
+            return false;
+        }
+        catch (Throwable throwable){
+            log.error("调用平台接口失败！",throwable);
+            return false;
         }
     }
+
     /**
      * Delete a resource from the repository
      *
@@ -326,18 +340,18 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
     @Path("/resource")
     public Response deleteResource(
             @QueryParam("file") String file) {
-        String username = sessionService.getAllSessionObjects().get("username").toString();
-        List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
+            String username = sessionService.getAllSessionObjects().get("username").toString();
+            List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
 
-        //先往平台删除记录 成功则让其通过 否则 不让其删除
-        if (!updateDataToRqPlatForm(null, file, username,"delete")) {
-            return Response.serverError().entity("无法删除资源: ( file: " + file + "),连接平台失败！").type("text/plain").build();
-        }
-        String resp = datasourceService.removeFile(file, username, roles);
-        if (resp.equals("Remove Okay")) {
-            return Response.ok().build();
-        } else {
-            return Response.serverError().entity("Cannot save resource to ( file: " + file + ")").type("text/plain").build();
+            //先往平台删除记录 成功则让其通过 否则 不让其删除
+            if (!updateDataToRqPlatForm(null, file, username,"delete")) {
+                return Response.serverError().entity("无法删除查询方案: ( file: " + file + "),连接平台失败！").type("text/plain").build();
+            }
+            String resp = datasourceService.removeFile(file, username, roles);
+            if (resp.equals("Remove Okay")) {
+                return Response.ok().build();
+            } else {
+            return Response.serverError().entity("查询方案删除失败！").type("text/plain").build();
         }
 
     }

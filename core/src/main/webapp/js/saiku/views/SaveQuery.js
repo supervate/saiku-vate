@@ -15,6 +15,7 @@
  */
 
 /**
+ * fixme by vate 该类是用来处理查询方案保存
  * The save query dialog
  */
 var SaveQuery = Modal.extend({
@@ -33,8 +34,8 @@ var SaveQuery = Modal.extend({
     },
 
     buttons: [
-        { text: 'Save', method: 'save' },
-        { text: 'Cancel', method: 'close' }
+        { text: '保存', method: 'save' },
+        { text: '取消', method: 'close' }
     ],
 
     folder_name: null,
@@ -301,6 +302,7 @@ var SaveQuery = Modal.extend({
             if (name !== null && name.length > 0) {
                 this.repository.fetch({
                     success: function(collection, response) {
+                    	layser.msg("查询方案保存成功！");
                         var paths = [];
 
                         paths.push.apply(paths, self.get_files(response));
@@ -321,15 +323,22 @@ var SaveQuery = Modal.extend({
 
                             return false;
                         }
-                    }
+                    },
+					error:function(){
+						var confirmIndex = layer.confirm("查询方案保存失败！请重试！(多次重试仍无效可联系管理员查看是否未能与平台连通...)", {
+							btn: ['确定'] //按钮
+						}, function(){
+							layer.close(confirmIndex);
+						});
+					}
                 });
             }
             else {
-                alert('You need to enter a name!');
+                alert('请输入文件名称！');
             }
         }
         else {
-            alert('You need select a folder!');
+            alert('请选择一个目录！');
         }
 
         return false;

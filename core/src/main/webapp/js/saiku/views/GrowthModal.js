@@ -39,8 +39,8 @@ var GrowthModal = Modal.extend({
 	},
 
 	buttons: [
-		{text: "OK", method: "save"},
-		{text: "Cancel", method: "close"}
+		{text: "确认", method: "save"},
+		{text: "取消", method: "close"}
 	],
 
 	addMeasureTemplate: _.template(

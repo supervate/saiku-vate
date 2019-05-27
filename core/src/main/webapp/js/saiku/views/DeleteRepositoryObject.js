@@ -16,14 +16,15 @@
  
 
 /**
+ * fixme by vate 这个类对应仓库界面的文件删除
  * The delete query confirmation dialog
  */
 var DeleteRepositoryObject = Modal.extend({
     type: "delete",
     
     buttons: [
-        { text: "Yes", method: "del" },
-        { text: "No", method: "close" }
+        { text: "确定", method: "del" },
+        { text: "取消", method: "close" }
     ],
     
     initialize: function(args) {
@@ -46,8 +47,11 @@ var DeleteRepositoryObject = Modal.extend({
         this.close();
     },
     
-    error: function() {
-        $(this.el).find('dialog_body')
-            .html('<span class="i18n">Could not delete repository object</span>');
-    }
+    error: function(msg) {
+		var confirmIndex = layer.confirm("查询方案删除失败！请重试！(多次重试仍无效可联系管理员查看是否未能与平台连通...)", {
+			btn: ['确定'] //按钮
+		}, function(){
+			layer.close(confirmIndex);
+		});
+	}
 });

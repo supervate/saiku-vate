@@ -1857,6 +1857,7 @@ var pvc = function(def, pv, cdo) {
         },
         getV1Series: function() {
             var s;
+            debugger;
             return def.nullyTo(this.scene.firstAtoms && (s = this.scene.firstAtoms[this.panel._getV1DimName("series")]) && s.rawValue, "Series");
         },
         getV1Category: function() {
@@ -4506,6 +4507,17 @@ var pvc = function(def, pv, cdo) {
                 return renderDim(dimType, value, valueLabel, dimAggr, calcPct, dimInterp);
             }
             function renderDim(dimType, value, valueLabel, dimAggr, calcPct, dimInterp) {
+            	var dimLabel = dimType.label;
+            	if(dimLabel != undefined && dimLabel != null){
+            		switch (dimLabel) {
+						case "Series":dimLabel = "系列";break;
+						case "Value":dimLabel = "值";break;
+						case "Multi Chart":dimLabel = "多表";break;
+						case "Size":dimLabel = "大小";break;
+						case "Category":dimLabel = "类别";break;
+						default:break;
+					}
+				}
                 var rowClasses = ttClasses("dim", "dimValueType-" + dimType.valueTypeName, "dim" + (dimType.isDiscrete ? "Discrete" : "Continuous"), dimAggr ? "dimAgg" : "", dimAggr ? "dimAgg-" + dimAggr : ""), anyPercentRole = !1, visRoles = me.visualRolesOf(dimType.name, !0), dimRolesHtml = visRoles ? visRoles.map(function(r) {
                     calcPct && (anyPercentRole |= r.isPercent);
                     return tag("span", {
@@ -4520,7 +4532,7 @@ var pvc = function(def, pv, cdo) {
                     "class": rowClasses
                 }, tag("td", {
                     "class": ttClasses("dimLabel")
-                }, tag("span", null, escapeHtml(dimType.label))), tag("td", {
+                }, tag("span", null, escapeHtml(dimLabel))), tag("td", {
                     "class": ttClasses("dimRoles")
                 }, dimRolesHtml), tag("td", {
                     "class": ttClasses("dimValue", null == value ? "valueNull" : "")

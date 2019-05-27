@@ -34,7 +34,7 @@ var FormatAsPercentageModal = Modal.extend({
 	},
 
 	buttons: [
-		{text: "Cancel", method: "close"},
+		{text: "取消", method: "close"},
 		{text: "Help", method: "help"}
 	],
 

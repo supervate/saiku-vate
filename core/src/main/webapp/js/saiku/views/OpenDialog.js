@@ -34,8 +34,8 @@ var OpenDialog = Modal.extend({
     },
 
     buttons: [
-        { id: "test", text: "Open", method: "open_query" },
-        { text: "Cancel", method: "close" }
+        { id: "test", text: "打开", method: "open_query" },
+        { text: "取消", method: "close" }
     ],
 
     initialize: function(args) {

@@ -15,6 +15,8 @@
  */
 
 /**
+ * fixme by vate
+ * 这个是仓库列表页面
  * The open query tab (Repository viewer)
  */
 var OpenQuery = Backbone.View.extend({
@@ -485,6 +487,7 @@ var OpenQuery = Backbone.View.extend({
     },
 
     clear_query: function() {
+    	layer.msg("查询方案删除成功!",{time:1000});
         $(this.el).find('.workspace_toolbar').addClass('hide');
         $(this.el).find('.workspace_results').html('');
         this.fetch_queries();
