@@ -47,8 +47,9 @@ var DeleteRepositoryObject = Modal.extend({
         this.close();
     },
     
-    error: function(msg) {
-		var confirmIndex = layer.confirm("查询方案删除失败！请重试！(多次重试仍无效可联系管理员查看是否未能与平台连通...)", {
+    error: function(data, textStatus, jqXHR) {
+    	console.log(textStatus);
+		var confirmIndex = layer.confirm(textStatus.responseText, {
 			btn: ['确定'] //按钮
 		}, function(){
 			layer.close(confirmIndex);

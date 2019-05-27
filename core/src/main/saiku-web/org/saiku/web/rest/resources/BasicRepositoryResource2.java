@@ -265,13 +265,13 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
         List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
         //先往平台插记录 成功则让其通过 否则 不让其保存
         if (!updateDataToRqPlatForm(content, file, username,"add")) {
-            return Response.serverError().entity("无法保存资源: ( file: " + file + "),连接平台失败！").header("Content-Type","text/plain; charset=utf-8").build();
+            return Response.serverError().entity("查询方案保存失败: ( 文件名：" + file + ") 错误原因：连接平台失败！").header("Content-Type","text/plain; charset=utf-8").build();
         }
         String resp = datasourceService.saveFile(content, file, username, roles);
         if (resp.equals("Save Okay")) {
             return Response.ok().build();
         } else {
-            return Response.serverError().entity("无法保存资源: ( file: " + file + ")").header("Content-Type","text/plain; charset=utf-8").build();
+            return Response.serverError().entity("查询方案保存失败: ( 文件名：" + file + ")").header("Content-Type","text/plain; charset=utf-8").build();
         }
 		/*
 				return Response.serverError().status(Status.FORBIDDEN)
@@ -345,13 +345,13 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
 
             //先往平台删除记录 成功则让其通过 否则 不让其删除
             if (!updateDataToRqPlatForm(null, file, username,"delete")) {
-                return Response.serverError().entity("无法删除查询方案: ( file: " + file + "),连接平台失败！").type("text/plain").build();
+                return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + "), 连接平台失败！").type("text/plain").build();
             }
             String resp = datasourceService.removeFile(file, username, roles);
             if (resp.equals("Remove Okay")) {
                 return Response.ok().build();
             } else {
-            return Response.serverError().entity("查询方案删除失败！").type("text/plain").build();
+            return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + ")！").type("text/plain").build();
         }
 
     }

@@ -302,9 +302,7 @@ var SaveQuery = Modal.extend({
             if (name !== null && name.length > 0) {
                 this.repository.fetch({
                     success: function(collection, response) {
-                    	layser.msg("查询方案保存成功！");
                         var paths = [];
-
                         paths.push.apply(paths, self.get_files(response));
 
                         if (paths.indexOf(name) > -1 && self.query.get('name') !== name) {
@@ -323,14 +321,7 @@ var SaveQuery = Modal.extend({
 
                             return false;
                         }
-                    },
-					error:function(){
-						var confirmIndex = layer.confirm("查询方案保存失败！请重试！(多次重试仍无效可联系管理员查看是否未能与平台连通...)", {
-							btn: ['确定'] //按钮
-						}, function(){
-							layer.close(confirmIndex);
-						});
-					}
+                    }
                 });
             }
             else {
@@ -378,13 +369,22 @@ var SaveQuery = Modal.extend({
         file = folder + file;
 
         var error = function(data, textStatus, jqXHR) {
+        	console.log(textStatus.responseText);
             if (textStatus && textStatus.status == 403 && textStatus.responseText) {
-                alert(textStatus.responseText);
+				var confirmIndex = layer.confirm(textStatus.responseText, {
+					btn: ['确定'] //按钮
+				}, function(){
+					layer.close(confirmIndex);
+				});
             }
             else {
+				var confirmIndex = layer.confirm(textStatus.responseText, {
+					btn: ['确定'] //按钮
+					}, function(){
+					layer.close(confirmIndex);
+					});
                 self.close();
             }
-
             return true;
         };
 
@@ -395,7 +395,10 @@ var SaveQuery = Modal.extend({
             name: this.query.get('name'),
             file: file,
             content: JSON.stringify(this.query.model)
-        })).save({}, { success:  this.close, error: error, dataType: 'text' });
+        })).save({}, { success: function(){
+				layer.msg("查询方案保存成功！");
+				this.close();
+			}, error: error, dataType: 'text' });
     },
 
     set_last_location: function(path) {
