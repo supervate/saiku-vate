@@ -19,6 +19,7 @@ package org.saiku.web.rest.resources;
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSON;
+import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.apache.avro.data.Json;
@@ -265,7 +266,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
         List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
         //先往平台插记录 成功则让其通过 否则 不让其保存
         if (!updateDataToRqPlatForm(content, file, username,"add")) {
-            return Response.serverError().entity("查询方案保存失败: ( 文件名：" + file + ") 错误原因：连接平台失败！").header("Content-Type","text/plain; charset=utf-8").build();
+            return Response.serverError().entity("查询方案保存失败: ( 文件名：" + file + ") 错误原因：无法连接至关联平台！请检查关联平台是否开启！").header("Content-Type","text/plain; charset=utf-8").build();
         }
         String resp = datasourceService.saveFile(content, file, username, roles);
         if (resp.equals("Save Okay")) {
@@ -290,7 +291,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                 case "add": {
                     HashMap<String, Object> paramMap = new HashMap<>();
                     paramMap.put("loginName", username);
-//                paramMap.put("content", content);
+                    paramMap.put("content", content);
                     paramMap.put("file", file);
                     paramMap.put("timestamp", new Date().getTime());
                     String result = HttpUtil.post(rqServerUrl + addQueryApi + "?_=" + new Date().getTime(), paramMap);
@@ -324,6 +325,10 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
             log.error("调用平台接口，连接失败！查询文件名为:{} 错误消息:{}",file,c.getMessage());
             return false;
         }
+        catch (JSONException c){
+            log.error(String.format("调用平台接口，返回数据异常(在连接至nginx时连接失败会返回html数据，会导致该问题，很大可能是由于无法联通关联平台造成)！查询文件名为:{} 错误消息:{}",file,c.getMessage() ),c);
+            return false;
+        }
         catch (Throwable throwable){
             log.error("调用平台接口失败！",throwable);
             return false;
@@ -345,7 +350,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
 
             //先往平台删除记录 成功则让其通过 否则 不让其删除
             if (!updateDataToRqPlatForm(null, file, username,"delete")) {
-                return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + "), 连接平台失败！").type("text/plain").build();
+                return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + "), 无法连接至关联平台！请检查关联平台是否开启！").type("text/plain").build();
             }
             String resp = datasourceService.removeFile(file, username, roles);
             if (resp.equals("Remove Okay")) {

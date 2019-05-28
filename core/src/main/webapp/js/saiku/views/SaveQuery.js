@@ -271,7 +271,14 @@ var SaveQuery = Modal.extend({
         // $currentTarget.parent().parent().has('.folder').children('.folder_row').addClass('selected');
         $currentTarget.addClass('selected');
         name = $currentTarget.find('a').attr('href').replace('#', '');
-        this.set_name(null, name);
+        //fixme by vate 当用户选择文件时，自动获取文件的文件夹目录，提升用户体验
+        var folder = null;
+		//  /homes/测试123.saiku
+		if (name.startsWith("/") && name.lastIndexOf("/") != 0){
+			//目录格式：/xxx/xxx 最后面的'/'不需要带上，
+			folder = name.substr(0,name.lastIndexOf("/"));
+		}
+        this.set_name(folder, name);
         path = $currentTarget.parent().parent().has('.folder').children('.folder_row').find('a').attr('href');
         path = path.replace('#', '');
         this.set_last_location(path);
@@ -325,11 +332,11 @@ var SaveQuery = Modal.extend({
                 });
             }
             else {
-                alert('请输入文件名称！');
+            	openLayerConfirmDialog('请输入文件名称！');
             }
         }
         else {
-            alert('请选择一个目录！');
+        	openLayerConfirmDialog('请选择一个目录！');
         }
 
         return false;
@@ -367,38 +374,31 @@ var SaveQuery = Modal.extend({
 
         file = file.length > 6 && file.indexOf('.saiku') == file.length - 6 ? file : file + '.saiku';
         file = folder + file;
-
-        var error = function(data, textStatus, jqXHR) {
-        	console.log(textStatus.responseText);
-            if (textStatus && textStatus.status == 403 && textStatus.responseText) {
-				var confirmIndex = layer.confirm(textStatus.responseText, {
-					btn: ['确定'] //按钮
-				}, function(){
-					layer.close(confirmIndex);
-				});
-            }
-            else {
-				var confirmIndex = layer.confirm(textStatus.responseText, {
-					btn: ['确定'] //按钮
-					}, function(){
-					layer.close(confirmIndex);
-					});
-                self.close();
-            }
-            return true;
-        };
-
         // Rename tab
         this.query.workspace.tab.$el.find('.saikutab').text(file.replace(/^.*[\\\/]/, '').split('.')[0]);
-
+		var layerLoadingIndex = layer.msg("正在保存...",{time:10000*1000, icon: 16,shade: 0.01});
         (new SavedQuery({
             name: this.query.get('name'),
             file: file,
             content: JSON.stringify(this.query.model)
         })).save({}, { success: function(){
 				layer.msg("查询方案保存成功！");
-				this.close();
+				layer.close(layerLoadingIndex);
+				self.close();
 			}, error: error, dataType: 'text' });
+
+		var error = function(data, textStatus, jqXHR) {
+			layer.close(layerLoadingIndex);
+			console.log(textStatus.responseText);
+			if (textStatus && textStatus.status == 403 && textStatus.responseText) {
+				openLayerConfirmDialog(textStatus.responseText);
+			}
+			else {
+				openLayerConfirmDialog(textStatus.responseText);
+				self.close();
+			}
+			return true;
+		};
     },
 
     set_last_location: function(path) {

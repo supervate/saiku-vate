@@ -15,6 +15,7 @@
  */
  
 /**
+ * fixme by vate 这个是仓库界面 新建文件夹
  * The "add a folder" dialog
  */
 var AddFolderModal = Modal.extend({
@@ -28,7 +29,7 @@ var AddFolderModal = Modal.extend({
     },
 
     buttons: [
-        { text: "OK", method: "save" }
+        { text: "确认", method: "save" }
     ],
 
     initialize: function(args) {

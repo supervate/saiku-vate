@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class ThinQuery implements ISaikuQuery {
-	
+
 	private ThinQueryModel queryModel;
 	private SaikuCube cube;
 	private String mdx;
@@ -22,19 +23,19 @@ public class ThinQuery implements ISaikuQuery {
 	private Map<String, String> plugins = new HashMap<>();
 	private Map<String, Object> properties = new HashMap<>();
 	private Map<String, String> metadata = new HashMap<>();
-	
+
 	private String queryType = "OLAP";
-	
+
 	public enum Type {
 		MDX,
 		QUERYMODEL
 	}
-	
+
 	private Type type;
-	
+
 	public ThinQuery() {}
 
-  public ThinQuery(String name, SaikuCube cube) {
+	public ThinQuery(String name, SaikuCube cube) {
 		this(name, cube, new ThinQueryModel());
 	}
 	public ThinQuery(String name, SaikuCube cube, ThinQueryModel queryModel) {
@@ -53,7 +54,7 @@ public class ThinQuery implements ISaikuQuery {
 		this.name = name;
 	}
 
-	
+
 	/**
 	 * @return the queryModel
 	 */
@@ -91,7 +92,7 @@ public class ThinQuery implements ISaikuQuery {
 	public String getMdx() {
 		return mdx;
 	}
-	
+
 	@JsonIgnore
 	public String getParameterResolvedMdx() {
 		String replacedMdx = mdx;
@@ -99,7 +100,7 @@ public class ThinQuery implements ISaikuQuery {
 			replacedMdx = ServiceUtil.replaceParameters(replacedMdx, parameters);
 		}
 		return replacedMdx;
-		
+
 	}
 
 	/**
@@ -150,7 +151,7 @@ public class ThinQuery implements ISaikuQuery {
 	public void setParameters(Map<String, String> parameters) {
 		this.parameters = parameters;
 	}
-	
+
 	public void setParameter(String name, String value) {
 		this.parameters.put(name, value);
 	}
@@ -161,7 +162,7 @@ public class ThinQuery implements ISaikuQuery {
 		}
 		return null;
 	}
-	
+
 	public void addParameter(String parameter) {
 		if (StringUtils.isNotBlank(parameter)) {
 			if (!parameters.containsKey(parameter)) {
@@ -169,7 +170,7 @@ public class ThinQuery implements ISaikuQuery {
 			}
 		}
 	}
-	
+
 	public void addParameters(List<String> parameters) {
 		if (parameters != null) {
 			for (String param : parameters) {
@@ -177,9 +178,9 @@ public class ThinQuery implements ISaikuQuery {
 			}
 		}
 	}
-	
+
 	public boolean hasAggregators() {
-	  return Type.QUERYMODEL.equals(type) && queryModel != null && queryModel.hasAggregators();
+		return Type.QUERYMODEL.equals(type) && queryModel != null && queryModel.hasAggregators();
 
 	}
 

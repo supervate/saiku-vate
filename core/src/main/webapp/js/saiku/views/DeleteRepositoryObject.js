@@ -33,26 +33,32 @@ var DeleteRepositoryObject = Modal.extend({
         this.success = args.success;
         this.message = '<span class="i18n">Are you sure you want to delete </span>'+'<span>' + this.query.get('name') + '?</span>';
     },
-    
+
     del: function() {
         this.query.set("id", _.uniqueId("query_"));
-        this.query.id = _.uniqueId("query_");
-        this.query.url = this.query.url() + "?file=" + encodeURIComponent(this.query.get('file'));
-        this.query.destroy({
-            success: this.success,
+		this.query.id = _.uniqueId("query_");
+		try {
+			this.query.url = this.query.url() + "?file=" + encodeURIComponent(this.query.get('file'));
+		}catch (e) {
+		}
+
+		var layerLoadingIndex = layer.msg("正在删除，请稍后...",{time:10000*1000, icon: 16,shade: 0.01});
+		var self = this;
+		this.query.destroy({
+            success: function (data, textStatus, jqXHR) {
+				layer.close(layerLoadingIndex);
+				self.success(data, textStatus, jqXHR);
+			},
             dataType: "text",
-            error: this.error,
+            error: function (data, textStatus, jqXHR) {
+				layer.close(layerLoadingIndex);
+				self.error(data, textStatus, jqXHR)
+			},
             wait:true
         });
         this.close();
     },
-    
-    error: function(data, textStatus, jqXHR) {
-    	console.log(textStatus);
-		var confirmIndex = layer.confirm(textStatus.responseText, {
-			btn: ['确定'] //按钮
-		}, function(){
-			layer.close(confirmIndex);
-		});
+	error: function(data, textStatus, jqXHR) {
+		openLayerConfirmDialog(textStatus.responseText);
 	}
 });

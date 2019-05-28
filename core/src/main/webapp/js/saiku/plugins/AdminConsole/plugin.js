@@ -257,8 +257,7 @@ var AdminConsole = Backbone.View.extend({
             "<div class='sidebar_inner'>" +
             "<a class='back_query' href='#back_query' style='display:none'></a>" +
             "    <ul id='queries' class='RepositoryObjects'>"+
-			/*fixme by vate*/
-			/*把用户管理的这一块给禁止了*/
+			/*fixme by vate 这里控制管理控制台界面的 用户列表 数据源列表 多维定义列表*/
             "<% if(Settings.SHOW_USER_MANAGEMENT) { %>"+
             "<li><strong>用户列表</strong>" +
             "<ul class='inner_users'><li class='create_user'><strong>添加新用户</strong></li></ul></li>" +
@@ -1038,10 +1037,9 @@ var AdminConsole = Backbone.View.extend({
             })).render().open();
         }
         else {
-			var loadIndex = layer.load(1, {
-				shade: [0.1,'#fff'] //0.1透明度的白色背景
-			});
-        	$.ajax({
+			var layerLoadingIndex = layer.msg("正在测试连接是否可用...",{time:10000*1000, icon: 16,shade: 0.01});
+
+			$.ajax({
 				url: Settings.REST_URL+AdminUrl+"/testDatasource",
 				type: 'POST',
 				dataType: 'text',
@@ -1049,7 +1047,7 @@ var AdminConsole = Backbone.View.extend({
 					"connInfo":JSON.stringify(connInfo)
 				},
 				success: function( data ) {
-					layer.close(loadIndex);
+					layer.close(layerLoadingIndex);
 					var confirmIndex = layer.confirm(data, {
 						btn: ['确定'] //按钮
 					}, function(){
@@ -1057,7 +1055,7 @@ var AdminConsole = Backbone.View.extend({
 					});
 				},
 				error: function(errmsg) {
-					layer.close(loadIndex);
+					layer.close(layerLoadingIndex);
 					var confirmIndex = layer.confirm("测试出错！服务器正忙！", {
 						btn: ['确定'] //按钮
 					}, function(){
@@ -1388,18 +1386,16 @@ var Schemas = Backbone.Collection.extend({
 })
 var Connection = Backbone.Model.extend({
     refresh: function(){
-		var loadIndex = layer.load(1, {
-			shade: [0.1,'#fff'] //0.1透明度的白色背景
-		});
-        $.ajax({
+		var layerLoadingIndex = layer.msg("正在刷新缓存...",{time:10000*1000, icon: 16,shade: 0.01});
+		$.ajax({
             type: 'GET',
             url: Settings.REST_URL+AdminUrl+"/datasources/"+this.get("connectionname")+"/refresh",
 			success:function (data) {
-            	layer.close(loadIndex);
+            	layer.close(layerLoadingIndex);
 				layer.msg("刷新成功！");
 			},
 			error:function(err){
-				layer.close(loadIndex);
+				layer.close(layerLoadingIndex);
 				var confirmIndex = layer.confirm("刷新出错！错误原因:"+err.responseText, {
 					btn: ['确定'] //按钮
 				}, function(){

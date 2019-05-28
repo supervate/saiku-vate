@@ -71,6 +71,16 @@
 
 <!--layer弹窗-->
 <script type="text/javascript" src="layer/layer.js"></script>
+<script type="application/javascript">
+	/*打开一个layer的提示框*/
+	function openLayerConfirmDialog(content){
+		var confirmIndex = layer.confirm(content, {
+			btn: ['确定'] //按钮
+		}, function(){
+			layer.close(confirmIndex);
+		});
+	}
+</script>
 
 <!-- CHOSEN PLACEHOLDER -->
 <script type="text/javascript">

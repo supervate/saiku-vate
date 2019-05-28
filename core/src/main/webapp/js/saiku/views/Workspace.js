@@ -84,16 +84,15 @@ var Workspace = Backbone.View.extend({
                 if ( $('body').find('.error_loading_query').length < 1) {
                     var message = (Saiku.i18n && Saiku.i18n.po_file.error_loading_query) ? Saiku.i18n.po_file.error_loading_query : null;
                     if (!message) {
-                        message = "查询加载出错！";
+                        message = "查询方案加载出错！(请检查该查询方案对应的多维定义文件是否存在)";
                         $('<span class="i18n error_loading_query">' + message + '</span>').hide().appendTo('body');
                         Saiku.i18n.translate();
                         message = $('.error_loading_query').text();
                     }
-                    alert(message);
-
+                    openLayerConfirmDialog(message);
                 } else {
                     var m = $('.error_loading_query').text();
-                    alert(m);
+					openLayerConfirmDialog(m);
                 }
             }});
         }

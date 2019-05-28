@@ -136,7 +136,7 @@ public class Query2Resource {
                 filecontent = json;
             } else if (StringUtils.isNotBlank(file)) {
                 Response f = repository.getResource(file);
-                filecontent = new String( (byte[]) f.getEntity());
+                filecontent = new String( (byte[]) f.getEntity(),"UTF-8");
             }
             if (StringUtils.isBlank(filecontent)) {
                 throw new SaikuServiceException("Cannot create new query. Empty file content " + StringUtils.isNotBlank(json) + " or read from file:" + file);

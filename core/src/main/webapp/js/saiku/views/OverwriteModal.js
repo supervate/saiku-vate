@@ -20,7 +20,7 @@
 var OverwriteModal = Modal.extend({
   type: 'info',
 
-  message: 'Are you sure you want to overwrite the existing query?',
+  message: '确定要覆盖当前选择的查询方案吗?',
 
   buttons: [
     { text: '确定', method: 'save' },
@@ -31,7 +31,7 @@ var OverwriteModal = Modal.extend({
     // Initialize properties
     _.extend(this, args);
 
-    this.options.title = 'Warning';
+    this.options.title = '警告';
 
     this.queryname   = this.name;
     this.queryfolder = this.foldername;
