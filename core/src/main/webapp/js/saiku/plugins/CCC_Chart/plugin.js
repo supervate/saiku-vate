@@ -105,7 +105,7 @@ var Chart = Backbone.View.extend({
 
         if ($(this.workspace.el).find('#charteditor').length === 0) {
             $(this.workspace.el).find('.query_toolbar_vertical').find('.options.chart.hide li:eq(0)').after('<li id="charteditor" class="seperator_vertical chart_editor"><a href="#charteditor" ' +
-                'style="height:30px;" class="button">Properties</a></li>');
+                'style="height:30px;" class="button">属性</a></li>');
 
             $(this.workspace.el).find('.query_toolbar_vertical').find('#charteditor').on('click', function (event) {
                 self.show_editor(event);
