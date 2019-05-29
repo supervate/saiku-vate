@@ -118,6 +118,20 @@ public class JdbcUserDAO
         return null;
     }
 
+    public String[] getRoles(String userName)
+    {
+        String sql = prop.getProperty("getRoleByUserName");
+        String roles =
+            getJdbcTemplate().queryForObject(sql, new Object[] { userName }, String.class);
+        if (roles != null)
+        {
+            List<String> list = new ArrayList(Arrays.asList(roles.split(",")));
+            String[] stockArr = new String[list.size()];
+            return list.toArray(stockArr);
+        }
+        return null;
+    }
+
     public SaikuUser findByUserId(int userId)
     {
 

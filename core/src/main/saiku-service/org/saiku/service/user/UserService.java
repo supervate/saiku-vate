@@ -88,6 +88,10 @@ public class UserService implements IUserManager, Serializable {
         return uDAO.getRoles(user);
     }
 
+    public String[] getRoles(String userName) {
+        return uDAO.getRoles(userName);
+    }
+
     public void addRole(SaikuUser u) {
         uDAO.insertRole(u);
     }

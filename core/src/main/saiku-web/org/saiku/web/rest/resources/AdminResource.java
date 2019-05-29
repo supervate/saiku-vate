@@ -47,6 +47,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -357,6 +358,11 @@ public class AdminResource {
     @Path("/users")
     @ReturnType("java.util.List<SaikuUser>")
     public Response getExistingUsers(@QueryParam("actk") String actk) {
+        //因为我们的内容是经过了一层urlencode的 而 经过urlencode的数据 在到达这里之前 又会被容器或者springmvc进行了一层url解码，为了保持一致性，我们选择再重新用urlencode一次
+        try {
+            if (actk!=null)
+                actk = URLEncoder.encode(actk,"utf-8");
+        } catch (UnsupportedEncodingException e) {}
         if(!userService.isAdmin() && !isAccessAble(actk)){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
@@ -487,6 +493,11 @@ public class AdminResource {
     @Path("/users/{id}")
     @ReturnType("org.saiku.database.dto.SaikuUser")
     public Response getUserDetails(@PathParam("id") int id, @QueryParam("actk") String actk) {
+        //因为我们的内容是经过了一层urlencode的 而 经过urlencode的数据 在到达这里之前 又会被容器或者springmvc进行了一层url解码，为了保持一致性，我们选择再重新用urlencode一次
+        try {
+            if (actk!=null)
+                actk = URLEncoder.encode(actk,"utf-8");
+        } catch (UnsupportedEncodingException e) {}
         if(!userService.isAdmin()){
             if (StringUtils.isBlank(actk) || !isAccessAble(actk))
                 return Response.status(Response.Status.FORBIDDEN).build();
@@ -507,6 +518,11 @@ public class AdminResource {
     @Path("/users/{username}")
     @ReturnType("org.saiku.database.dto.SaikuUser")
     public Response updateUserDetails(SaikuUser jsonString, @PathParam("username") String userName,@QueryParam("actk") String actk) {
+        //因为我们的内容是经过了一层urlencode的 而 经过urlencode的数据 在到达这里之前 又会被容器或者springmvc进行了一层url解码，为了保持一致性，我们选择再重新用urlencode一次
+        try {
+            if (actk!=null)
+                actk = URLEncoder.encode(actk,"utf-8");
+        } catch (UnsupportedEncodingException e) {}
         if(!userService.isAdmin()){
             if (StringUtils.isBlank(actk) || !isAccessAble(actk))
                 return Response.status(Response.Status.FORBIDDEN).build();
@@ -530,6 +546,11 @@ public class AdminResource {
     @Path("/users")
     @ReturnType("org.saiku.database.dto.SaikuUser")
     public Response createUserDetails(SaikuUser jsonString,@QueryParam("actk") String actk) {
+        //因为我们的内容是经过了一层urlencode的 而 经过urlencode的数据 在到达这里之前 又会被容器或者springmvc进行了一层url解码，为了保持一致性，我们选择再重新用urlencode一次
+        try {
+            if (actk!=null)
+                actk = URLEncoder.encode(actk,"utf-8");
+        } catch (UnsupportedEncodingException e) {}
         if(!userService.isAdmin()){
             if (StringUtils.isBlank(actk) || !isAccessAble(actk))
             return Response.status(Response.Status.FORBIDDEN).build();

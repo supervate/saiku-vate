@@ -45,6 +45,9 @@
 		<security:intercept-url pattern="/rest/saiku/session*" access="isAnonymous() or isFullyAuthenticated()"/>
 		<!--看板使用的接口,单独在方法中做权限控制-->
 		<security:intercept-url pattern="/rest/saiku/*/export/saiku/json" access="isAnonymous()"/>
+		<security:intercept-url pattern="/rest/saiku/api/repository/byactk"
+								access="isAnonymous()"/>
+		<security:intercept-url pattern="/rest/saiku/export/json/byactk" access="isAnonymous()"/>
 		<security:intercept-url pattern="/rest/saiku/api/license/usercount"
 								access="isAnonymous() or isFullyAuthenticated()"/>
 		<security:intercept-url pattern="/rest/**" access="isFullyAuthenticated()"/>

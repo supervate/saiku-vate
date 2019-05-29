@@ -83,7 +83,7 @@ public class ExporterResource {
 	{
 		try {
 			Response f = repository.getResource(file);
-			String fileContent = new String( (byte[]) f.getEntity());
+			String fileContent = new String( (byte[]) f.getEntity(),"UTF-8");
 			String queryName = UUID.randomUUID().toString();			
 			//fileContent = ServletUtil.replaceParameters(servletRequest, fileContent);
 //			queryResource.createQuery(queryName,  null,  null, null, fileContent, queryName, null);
@@ -127,7 +127,7 @@ public class ExporterResource {
 	{
 		try {
 			Response f = repository.getResource(file);
-			String fileContent = new String( (byte[]) f.getEntity());
+			String fileContent = new String( (byte[]) f.getEntity(),"UTF-8");
 			//fileContent = ServletUtil.replaceParameters(servletRequest, fileContent);
 			String queryName = UUID.randomUUID().toString();
 //			query2Resource.createQuery(null,  null,  null, null, fileContent, queryName, null);
@@ -172,7 +172,7 @@ public class ExporterResource {
 	{
 		try {
 			Response f = repository.getResource(file);
-			String fileContent = new String( (byte[]) f.getEntity());
+			String fileContent = new String( (byte[]) f.getEntity(),"UTF-8");
 			fileContent = ServletUtil.replaceParameters(servletRequest, fileContent);
 			String queryName = UUID.randomUUID().toString();
 //			query2Resource.createQuery(null,  null,  null, null, fileContent, queryName, null);
@@ -222,7 +222,7 @@ public class ExporterResource {
   {
 	try {
 	  Response f = repository.getResource(file);
-	  String fileContent = new String( (byte[]) f.getEntity());
+	  String fileContent = new String( (byte[]) f.getEntity(),"UTF-8");
 	  fileContent = ServletUtil.replaceParameters(servletRequest, fileContent);
 	  String queryName = UUID.randomUUID().toString();
 	  query2Resource.createQuery(queryName, fileContent, null, null);

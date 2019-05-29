@@ -22,6 +22,7 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.vate.EncryptAndDecryptUtil;
 import org.apache.avro.data.Json;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +35,7 @@ import org.saiku.repository.AclEntry;
 import org.saiku.repository.IRepositoryObject;
 import org.saiku.service.ISessionService;
 import org.saiku.service.datasource.DatasourceService;
+import org.saiku.service.user.UserService;
 import org.saiku.service.util.exception.SaikuServiceException;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -49,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -86,6 +89,17 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
     private String rqServerUrl;
     private String addQueryApi;
     private String deleteQueryApi;
+
+    public EncryptAndDecryptUtil encryptAndDecryptUtil;
+    public UserService userService;
+
+    public void setEncryptAndDecryptUtil(EncryptAndDecryptUtil encryptAndDecryptUtil) {
+        this.encryptAndDecryptUtil = encryptAndDecryptUtil;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     public void setDatasourceService(DatasourceService ds) {
         datasourceService = ds;
@@ -154,6 +168,51 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
 
         String username = sessionService.getAllSessionObjects().get("username").toString();
         List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
+        String[] t = type.split(",");
+        List<IRepositoryObject> l;
+
+        if (path == null) {
+            l = (datasourceService.getFiles(Arrays.asList(t), username, roles));
+        } else {
+            l = (datasourceService.getFiles(Arrays.asList(t), username, roles, path));
+        }
+
+        return l;
+    }
+
+    /*
+     * fixme by vate 自定义接口，该接口的不受rqcube权限系统控制，单独使用actk来识别用户
+     */
+    @POST
+    @Path("byactk")
+    @Produces({"application/json"})
+    public List<IRepositoryObject> getRepositoryActk(
+            @FormParam("path") String path,
+            @FormParam("type") String type,
+            @FormParam("actk") String actk) {
+        String actkInfo;
+        String[] userInfo;
+        if (StringUtils.isBlank(actk)){
+            return new ArrayList<IRepositoryObject>();
+        }
+        try {
+            actkInfo = encryptAndDecryptUtil.decryptContentForRqpanda(actk);
+            userInfo = actkInfo.split(",");
+            if (userInfo.length < 2){
+                return new ArrayList<IRepositoryObject>();
+            }
+        }
+        catch (Throwable throwable){
+            log.info("接口:/repository/byactk 解析actk信息失败，不予返回数据.",throwable);
+            return new ArrayList<IRepositoryObject>();
+        }
+
+        String username = userInfo[0];
+        String[] roleArr = userService.getRoles(username);
+        List<String> roles = roleArr == null? new ArrayList<>() :Arrays.asList(roleArr);
+        if (type == null){
+            return new ArrayList<IRepositoryObject>();
+        }
         String[] t = type.split(",");
         List<IRepositoryObject> l;
 
@@ -502,5 +561,4 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
 
 
     }
-
 }

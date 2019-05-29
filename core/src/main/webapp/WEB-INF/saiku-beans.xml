@@ -220,6 +220,8 @@
         <property name="rqServerUrl" value="${rqServerUrl}"/>
         <property name="addQueryApi" value="${rqServerApi.addQuery}"/>
         <property name="deleteQueryApi" value="${rqServerApi.deleteQuery}"/>
+		<property name="encryptAndDecryptUtil" ref="EncryptAndDecryptUtil"/>
+		<property name="userService" ref="userServiceBean"/>
 	</bean>
 
 
@@ -234,6 +236,14 @@
           class="org.saiku.web.rest.resources.ExporterResource">
         <property name="repository" ref="repository2bean"/>
         <property name="query2Resource" ref="queryResource2"/>
+    </bean>
+
+    <bean id="exporterBeanByActk" scope="request"
+          class="org.saiku.web.rest.resources.ExporterResourceByActk">
+        <property name="repository" ref="repository2bean"/>
+        <property name="query2Resource" ref="queryResource2"/>
+        <property name="userService" ref="userServiceBean"/>
+        <property name="encryptAndDecryptUtil" ref="EncryptAndDecryptUtil"/>
     </bean>
 
 
