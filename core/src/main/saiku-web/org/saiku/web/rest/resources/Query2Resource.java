@@ -326,7 +326,7 @@ public class Query2Resource {
             }
             return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
                     "content-disposition",
-                    "attachment; filename = " + name).header(
+                    "attachment; filename = " + new String(name.getBytes("utf-8"), "ISO8859-1" )).header(
                     "content-length",doc.length).build();
         }
         catch (Exception e) {
@@ -377,7 +377,7 @@ public class Query2Resource {
 
             return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
                     "content-disposition",
-                    "attachment; filename = " + name + ".csv").header(
+                    "attachment; filename = " + new String(name.getBytes("utf-8"), "ISO8859-1" ) + ".csv").header(
                     "content-length",doc.length).build();
         }
         catch (Exception e) {
@@ -544,7 +544,7 @@ public class Query2Resource {
             String name = SaikuProperties.webExportCsvName;
             return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
                     "content-disposition",
-                    "attachment; filename = " + name + "-drillthrough.csv").header(
+                    "attachment; filename = " + new String(name.getBytes("utf-8"), "ISO8859-1" ) + "-drillthrough.csv").header(
                     "content-length",doc.length).build();
 
 
@@ -645,7 +645,8 @@ public class Query2Resource {
             }
             return Response.ok(doc).type("application/pdf").header(
                     "content-disposition",
-                    "attachment; filename = "+name+".pdf").header(
+                    //fixme by vate 这里是故意弄成ISO8859-1的 不然中文名就会乱码
+                    "attachment; filename = "+new String(name.getBytes("utf-8"), "ISO8859-1" ) +".pdf").header(
                     "content-length",doc.length).build();
         } catch (Exception e) {
             log.error("Error exporting query to  PDF", e);

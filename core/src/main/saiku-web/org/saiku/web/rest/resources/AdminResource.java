@@ -76,8 +76,8 @@ public class AdminResource {
     private LogExtractor logExtractor;
     private EncryptAndDecryptUtil encryptAndDecryptUtil;
 
-    private static final String accessAccount = "rqpanda";
-    private static final String accessPwd = "eLXZYVEg292bgbD6";
+    protected static final String accessAccount = "rqpanda";
+    protected static final String accessPwd = "eLXZYVEg292bgbD6";
 
     private static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*2);
 

@@ -329,7 +329,7 @@ public class QueryResource {
 			String name = SaikuProperties.webExportExcelName + "." + SaikuProperties.webExportExcelFormat;
 			return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
 					"content-disposition",
-					"attachment; filename = " + name).header(
+					"attachment; filename = " + new String(name.getBytes("utf-8"), "ISO8859-1" )).header(
 							"content-length",doc.length).build();
 		}
 		catch (Exception e) {
@@ -362,7 +362,7 @@ public class QueryResource {
 			String name = SaikuProperties.webExportCsvName;
 			return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
 					"content-disposition",
-					"attachment; filename = " + name + ".csv").header(
+					"attachment; filename = " + new String(name.getBytes("utf-8"), "ISO8859-1" ) + ".csv").header(
 							"content-length",doc.length).build();
 		}
 		catch (Exception e) {
@@ -786,7 +786,7 @@ public class QueryResource {
 			String name = SaikuProperties.webExportCsvName;
 			return Response.ok(doc, MediaType.APPLICATION_OCTET_STREAM).header(
 					"content-disposition",
-					"attachment; filename = " + name + "-drillthrough.csv").header(
+					"attachment; filename = " + new String(name.getBytes("utf-8"), "ISO8859-1" ) + "-drillthrough.csv").header(
 							"content-length",doc.length).build();
 
 

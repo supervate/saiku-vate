@@ -56,38 +56,42 @@
   <script src="../js/saiku/embed/SaikuEmbed.js"></script>
 
   <script>
+
+
+
     var myClient = new SaikuClient({
-      server: 'http://10.0.0.8:3334/saiku', // required
-      path: '/rest/saiku/embed', // required
-      user: 'admin', // required
-      password: 'admin', // required
-      blockUI: true // optional
+      server: 'http://gzraqsoft.mynetgear.com:3334', // required
+      path: '/rqcube/rest/saiku/export', // required
+      user: 'default', // required
+      password: 'default', // required
+	  blockUI: true // optional
     });
 
     myClient.execute({
-      file: '/homes/测试.saiku', // required
+      file: '/homes/我来看看通不通.saiku', // required
       htmlObject: '#widget_1', // required
       render: 'chart', // required - table || chart
-      params: {
-        family: 'testparameter'
+	  actk:"P7t9kucjFY6foJX0%2BqpNZVPEPQqjZC945DJ84%2Bv0a1s%3D",
+		params: {
+		  family: 'testparameter'
       }
     });
 
-    myClient.execute({
-      file: '/homes/测试2.saiku',
-      htmlObject: '#widget_2',
-      render: 'chart',
-      mode: 'heatgrid', // chart: line, bar, treemap, ...
-      zoom: true,
-      chartDefinition: {
-          width: 900,
-          colors: ['grey','red','blue'],
-          extensionPoints: {
-          xAxisLabel_textAngle: - Math.PI/3,
-          panel_fillStyle: '#eaeaea'
-        }
-      }
-    });
+    // myClient.execute({
+    //   file: '/homes/测试2.saiku',
+    //   htmlObject: '#widget_2',
+    //   render: 'chart',
+    //   mode: 'heatgrid', // chart: line, bar, treemap, ...
+    //   zoom: true,
+    //   chartDefinition: {
+    //       width: 900,
+    //       colors: ['grey','red','blue'],
+    //       extensionPoints: {
+    //       xAxisLabel_textAngle: - Math.PI/3,
+    //       panel_fillStyle: '#eaeaea'
+    //     }
+    //   }
+    // });
   </script>
 </body>
 </html>

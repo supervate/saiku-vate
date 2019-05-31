@@ -260,7 +260,8 @@ var SaikuClient = (function() {
 		parameters = _.extend(
 			parameters,
 			{ 'formatter': options.formatter },
-			{ 'file': options.file }
+			{ 'file': options.file },
+			{ 'actk': options.actk }
 		);
 
 		if ($.blockUI && this.settings.blockUI) {
@@ -268,10 +269,10 @@ var SaikuClient = (function() {
 				message: '<span class="saiku_logo" style="float:left">&nbsp;&nbsp;</span> Executing....'
 			});
 		}
-
+		debugger;
 		var params = {
-			url: self.settings.server + (self.settings.path ? self.settings.path : '') + '/export/saiku/json',
-			type: 'GET',
+			url: self.settings.server + (self.settings.path ? self.settings.path : '') + '/json/byactk',
+			type: 'POST',
 			cache: false,
 			data: parameters,
 			contentType: 'application/x-www-form-urlencoded',
@@ -283,7 +284,7 @@ var SaikuClient = (function() {
 					var auth = 'Basic ' + Base64.encode(
 							self.settings.user + ':' + self.settings.password
 						);
-					request.setRequestHeader('Authorization', auth);
+					// request.setRequestHeader('Authorization', auth);
 					return true;
 				}
 			},

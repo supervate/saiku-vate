@@ -18,7 +18,7 @@ public class JSConverter {
         StringWriter stringWriter = new StringWriter();
         useJavascriptToConvertToHtml(queryResult, stringWriter);
         String content = stringWriter.toString();
-        content = appendSaikuCommercialIfNecessary(content);
+//        content = appendSaikuCommercialIfNecessary(content);
         return content;
     }
 
@@ -74,7 +74,7 @@ public class JSConverter {
     private static String appendSaikuCommercialIfNecessary(String content) {
         if (getVersion() != null && !getVersion().contains("EE")) {
             content =
-                content + "<div style='margin-top:10px;'><h5>Export Provided By Saiku Analytics Community Edition(http://meteorite.bi)"
+                content + "<div style='margin-top:10px;'><h5>Export Provided By Rqcube"
                     + "</h5></div>";
         }
         content = content.replaceAll("&nbsp;", " ");

@@ -255,11 +255,12 @@ public class ExporterResource {
 			if (StringUtils.isBlank(svg)) {
 				throw new Exception("Missing 'svg' parameter");
 			}
-            if(getVersion()!=null && !getVersion().contains("EE"))
-            {
-                String watermark = IOUtils.toString(ExporterResource.class.getResource("/org/saiku/web/svg/watermark.svg"));
-                svg = svg.replace("</svg>", watermark + "</svg>");
-            }
+			//该操作主要是用来加入水印，暂时禁用
+			//  if(getVersion()!=null && !getVersion().contains("EE"))
+			//  {
+			//      String watermark = IOUtils.toString(ExporterResource.class.getResource("/org/saiku/web/svg/watermark.svg"));
+			//      svg = svg.replace("</svg>", watermark + "</svg>");
+			//  }
 			final InputStream in = new ByteArrayInputStream(svg.getBytes("UTF-8"));
 			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 			out.flush();
@@ -275,7 +276,7 @@ public class ExporterResource {
             }
             return Response.ok(b).type(converter.getContentType()).header(
                 "content-disposition",
-                "attachment; filename = "+name+"." + converter.getExtension()).header(
+                "attachment; filename = "+new String(name.getBytes("utf-8"), "ISO8859-1" )+"." + converter.getExtension()).header(
                 "content-length", b.length).build();
 
 		} catch (Exception e) {

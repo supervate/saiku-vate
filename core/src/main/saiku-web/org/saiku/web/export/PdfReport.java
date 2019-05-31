@@ -12,6 +12,7 @@ import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.fonts.apps.TTFReader;
 import org.saiku.service.util.exception.SaikuServiceException;
 import org.saiku.service.util.export.PdfPerformanceLogger;
 import org.saiku.web.rest.objects.resultset.QueryResult;
@@ -143,7 +144,7 @@ public class PdfReport {
 
     /**
      * Query to HTML, HTML to DOM, DOM to FO and FO is written as PDF Byte array
-     *
+     * 查询数据 - HTML - DOM对象 - FOP - PDF字节流
      * @param queryResult
      * @param pdf
      * @param queryResultSize
@@ -151,9 +152,17 @@ public class PdfReport {
      */
     private void populatePdf(QueryResult queryResult, OutputStream pdf, Rectangle queryResultSize) throws Exception {
         String htmlContent = generateContentAsHtmlString(queryResult);
+        htmlContent = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
+                + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+                +"<head>"
+                +"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
+                +"<style type=\"text/css\" mce_bogus=\"1\">body {font-family: SimSun-ExtB;}</style>"
+                +"</head>"
+                +"<body>"
+                +htmlContent
+                +"</body></html>";
         org.w3c.dom.Document htmlDom = DomConverter.getDom(htmlContent);
         org.w3c.dom.Document foDoc = FoConverter.getFo(htmlDom);
-
         byte[] formattedPdfContent = fo2Pdf(foDoc, null, queryResultSize);
         tryWritingContentToPdfStream(pdf, formattedPdfContent);
 
@@ -185,7 +194,7 @@ public class PdfReport {
     private String createExportedByMessage() {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date date = new Date();
-        return "<p>" + "Saiku Export - " + dateFormat.format(date) + "</p>";
+        return "<p>" + "Rqcube Export - " + dateFormat.format(date) + "</p>";
     }
 
     private byte[] fo2Pdf(org.w3c.dom.Document foDocument, String styleSheet, Rectangle size) {
@@ -244,5 +253,13 @@ public class PdfReport {
 	 private Rectangle getQueryResultSize(QueryResult queryResult) {
         int resultWidth = calculateResultWidth(queryResult);
         return calculateDocumentSize(resultWidth);
+    }
+
+    public static void main(String args[]){
+        String[] parameters = {
+                "-ttcname",
+                "simsun",
+                "C:\\Windows\\Fonts\\simsunb.ttf", "E:/simsun.xml", };
+        TTFReader.main(parameters);
     }
 }

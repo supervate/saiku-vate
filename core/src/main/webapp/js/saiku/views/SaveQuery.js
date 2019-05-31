@@ -377,17 +377,7 @@ var SaveQuery = Modal.extend({
         // Rename tab
         this.query.workspace.tab.$el.find('.saikutab').text(file.replace(/^.*[\\\/]/, '').split('.')[0]);
 		var layerLoadingIndex = layer.msg("正在保存...",{time:10000*1000, icon: 16,shade: 0.01});
-        (new SavedQuery({
-            name: this.query.get('name'),
-            file: file,
-            content: JSON.stringify(this.query.model)
-        })).save({}, { success: function(){
-				layer.msg("查询方案保存成功！");
-				layer.close(layerLoadingIndex);
-				self.close();
-			}, error: error, dataType: 'text' });
-
-		var error = function(data, textStatus, jqXHR) {
+		var errorHnadle = function(data, textStatus, jqXHR) {
 			layer.close(layerLoadingIndex);
 			console.log(textStatus.responseText);
 			if (textStatus && textStatus.status == 403 && textStatus.responseText) {
@@ -399,6 +389,15 @@ var SaveQuery = Modal.extend({
 			}
 			return true;
 		};
+        (new SavedQuery({
+            name: this.query.get('name'),
+            file: file,
+            content: JSON.stringify(this.query.model)
+        })).save({}, { success: function(){
+				layer.msg("查询方案保存成功！");
+				layer.close(layerLoadingIndex);
+				self.close();
+			}, error: errorHnadle, dataType: 'text' });
     },
 
     set_last_location: function(path) {

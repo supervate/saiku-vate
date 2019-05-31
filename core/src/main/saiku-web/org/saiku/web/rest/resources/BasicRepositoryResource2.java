@@ -353,6 +353,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                     paramMap.put("content", content);
                     paramMap.put("file", file);
                     paramMap.put("timestamp", new Date().getTime());
+                    paramMap.put("actk", encryptAndDecryptUtil.encryptContentForRqpanda(AdminResource.accessAccount+","+AdminResource.accessPwd));
                     String result = HttpUtil.post(rqServerUrl + addQueryApi + "?_=" + new Date().getTime(), paramMap);
                     JSONObject resultObj = JSONUtil.parseObj(result);
                     int code = resultObj.getInt("code");
@@ -366,6 +367,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                 case "delete": {
                     HashMap<String, Object> paramMap = new HashMap<>();
                     paramMap.put("file", file);
+                    paramMap.put("actk", encryptAndDecryptUtil.encryptContentForRqpanda(AdminResource.accessAccount+","+AdminResource.accessPwd));
                     String result = HttpUtil.post(rqServerUrl + deleteQueryApi, paramMap);
                     JSONObject resultObj = JSONUtil.parseObj(result);
                     int code = resultObj.getInt("code");
