@@ -21,14 +21,14 @@ var LoginForm = Modal.extend({
     type: 'login',
 
     message: _.template(
-        '<form id="login_form">' +
-            '<label for="username" class="i18n">Username</label>' +
+        '<form id="logiusernamen_form">' +
+            '<label for="" class="i18n">Username</label>' +
             '<input type="text" id="username" name="username">' +
             '<label for="password" class="i18n">Password</label>' +
             '<input type="password" id="password" name="password">' +
             '<% if (Settings.EVALUATION_PANEL_LOGIN) { %>' +
                 '<div class="eval-panel">' +
-                    '<a href="#eval_login" class="i18n" id="eval-login">Evaluation Login</a>' +
+                    // <a href="#eval_login" class="i18n" id="eval-login">Evaluation Login</a>'
                     '<div class="eval-panel-user clearfix" hidden>' +
                         '<ul>' +
                             '<li class="i18n">Administrator</li>' +
@@ -51,7 +51,7 @@ var LoginForm = Modal.extend({
     },
 
     buttons: [
-        { text: 'Login', method: 'login' },
+        { text: '登录', method: 'login' },
         { text: 'Upload License', method: 'upload_license' },
     ],
 

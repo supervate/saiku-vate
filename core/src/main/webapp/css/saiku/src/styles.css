@@ -917,8 +917,11 @@ input.newfolder {
   padding-top: 10px;
 }
 
-.dialog_login .dialog_icon {
-  background-position: -666px 15px;
+.dialog_login .dialog_icon{
+	background-image: url(../../../images/src/saiku_32x32.png)!important;
+	background-position-x: center;
+	background-position-y: center;
+	background-repeat: no-repeat;
 }
 
 .dialog_selections {

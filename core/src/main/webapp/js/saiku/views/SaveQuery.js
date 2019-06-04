@@ -306,7 +306,7 @@ var SaveQuery = Modal.extend({
         var name = this.$el.find('input[name="name"]').val();
 
         if (this.folder_name !== null && this.folder_name !== undefined && this.folder_name.length > 0) {
-            if (name !== null && name.length > 0) {
+            if (name !== null && name.length > 0 && !name.endsWith("/")) {
                 this.repository.fetch({
                     success: function(collection, response) {
                         var paths = [];

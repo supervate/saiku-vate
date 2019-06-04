@@ -363,8 +363,10 @@ public class AdminResource {
             if (actk!=null)
                 actk = URLEncoder.encode(actk,"utf-8");
         } catch (UnsupportedEncodingException e) {}
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         return Response.ok().entity(userService.getUsers()).build();
     }
@@ -379,8 +381,10 @@ public class AdminResource {
     @Path("/allUsers")
     @ReturnType("java.util.List<SaikuUser>")
     public Response getExistingUsersPost(@FormParam("actk") String actk) {
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         return Response.ok().entity(userService.getUsers()).build();
     }
@@ -498,9 +502,10 @@ public class AdminResource {
             if (actk!=null)
                 actk = URLEncoder.encode(actk,"utf-8");
         } catch (UnsupportedEncodingException e) {}
-        if(!userService.isAdmin()){
-            if (StringUtils.isBlank(actk) || !isAccessAble(actk))
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
                 return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         return Response.ok().entity(userService.getUser(id)).build();
     }
@@ -523,9 +528,10 @@ public class AdminResource {
             if (actk!=null)
                 actk = URLEncoder.encode(actk,"utf-8");
         } catch (UnsupportedEncodingException e) {}
-        if(!userService.isAdmin()){
-            if (StringUtils.isBlank(actk) || !isAccessAble(actk))
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
                 return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         if(jsonString.getPassword() == null || jsonString.getPassword().equals("")) {
             return Response.ok().entity(userService.updateUser(jsonString, false)).build();
@@ -551,9 +557,10 @@ public class AdminResource {
             if (actk!=null)
                 actk = URLEncoder.encode(actk,"utf-8");
         } catch (UnsupportedEncodingException e) {}
-        if(!userService.isAdmin()){
-            if (StringUtils.isBlank(actk) || !isAccessAble(actk))
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         return Response.ok().entity(userService.addUser(jsonString)).build();
     }
@@ -571,8 +578,10 @@ public class AdminResource {
     @ReturnType("java.lang.String")
     public Response addUsers(@FormParam("usersJsonStr") String usersJsonStr,@FormParam("actk") String actk) {
 
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         List<String> errUserNames = new ArrayList<>();
         JSONArray users = JSONUtil.parseArray(usersJsonStr);
@@ -616,8 +625,10 @@ public class AdminResource {
     @Path("/updateUsers")
     @ReturnType("java.lang.String")
     public Response updateUserDetails(@FormParam("usersJsonStr") String usersJsonStr,@FormParam("actk") String actk) {
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         List<String> errUserNames = new ArrayList<>();
         JSONArray users = JSONUtil.parseArray(usersJsonStr);
@@ -671,9 +682,10 @@ public class AdminResource {
     @Path("/delUsers")
     @ReturnType("java.lang.String")
     public Response removeUsers(@FormParam("userNames") String userNames,@FormParam("actk") String actk) {
-
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         String[] userNameArr = userNames.split(",");
         Set delUserNameSet = new HashSet();

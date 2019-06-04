@@ -398,11 +398,12 @@ public class JackRabbitRepositoryManager implements IRepositoryManager {
         parent = "/";
       }
       Node node = getFolder(parent);
-      Acl2 acl2 = new Acl2(node);
-      acl2.setAdminRoles(userService.getAdminRoles());
-      if (acl2.canWrite(node, user, roles)) {
-        throw new SaikuServiceException("Can't write to file or folder");
-      }
+      //fixme by vate 取消普通用户不能添加文件到公共目录的限制
+//      Acl2 acl2 = new Acl2(node);
+//      acl2.setAdminRoles(userService.getAdminRoles());
+//      if (acl2.canWrite(node, user, roles)) {
+//        throw new SaikuServiceException("Can't write to file or folder");
+//      }
 
       int pos = path.lastIndexOf("/");
       String filename = "./" + path.substring(pos + 1, path.length());
@@ -416,12 +417,12 @@ public class JackRabbitRepositoryManager implements IRepositoryManager {
       String filename = "./" + path.substring(pos + 1, path.length());
       
       Node n = getFolder(path.substring(0, pos));
-      
-      Acl2 acl2 = new Acl2(n);
-      acl2.setAdminRoles(userService.getAdminRoles());
-      if (acl2.canWrite(n, user, roles)) {
-        throw new SaikuServiceException("Can't write to file or folder");
-      }
+      //fixme by vate 取消普通用户不能添加文件到公共目录的限制
+//      Acl2 acl2 = new Acl2(n);
+//      acl2.setAdminRoles(userService.getAdminRoles());
+//      if (acl2.canWrite(n, user, roles)) {
+//        throw new SaikuServiceException("Can't write to file or folder");
+//      }
 
       Node check = JcrUtils.getNodeIfExists(n, filename);
       if(check!=null){

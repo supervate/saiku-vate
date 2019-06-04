@@ -127,6 +127,7 @@ var Session = Backbone.Model.extend({
             if (Settings.DEMO) {
                 this.form = new DemoLoginForm({ session: this });
             } else {
+            	//fixme by vate 在这里，打开登录界面模板
                 this.form = new LoginForm({ session: this });
             }
             this.form.render().open();

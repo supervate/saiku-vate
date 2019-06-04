@@ -33,6 +33,7 @@ import org.apache.commons.vfs.VFS;
 
 import org.saiku.repository.AclEntry;
 import org.saiku.repository.IRepositoryObject;
+import org.saiku.repository.RepositoryFolderObject;
 import org.saiku.service.ISessionService;
 import org.saiku.service.datasource.DatasourceService;
 import org.saiku.service.user.UserService;
@@ -177,7 +178,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
             l = (datasourceService.getFiles(Arrays.asList(t), username, roles, path));
         }
 
-        return l;
+        return customerFilterRepository(l,false);
     }
 
     /*
@@ -222,17 +223,63 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
             l = (datasourceService.getFiles(Arrays.asList(t), username, roles, path));
         }
 
-        return l;
+        return customerFilterRepository(l,true);
+    }
+
+    /**
+     * 对某些非查询方案的目录进行简单的排除
+     * @param repositoryObjects 被过滤的仓库对象列表
+     * @param excludePublic 是否需要过滤调
+     * @return
+     */
+    public List<IRepositoryObject> customerFilterRepository(List<IRepositoryObject> repositoryObjects, boolean excludePublic) {
+        if (repositoryObjects != null) {
+            Set<String> excluedeFileName = new HashSet<>(Arrays.asList("/datasources", "/etc"));
+            Iterator<IRepositoryObject> iterator = repositoryObjects.iterator();
+            while (iterator.hasNext()) {
+                IRepositoryObject repositoryObject = iterator.next();
+                if (IRepositoryObject.Type.FOLDER == repositoryObject.getType()) {
+                    RepositoryFolderObject folderObject = (RepositoryFolderObject) repositoryObject;
+                    if (excluedeFileName.contains(folderObject.getPath())) {
+                        iterator.remove();
+                    }
+                    if ("/homes".equals(folderObject.getPath()) && excludePublic) {
+                        List<IRepositoryObject> homeObjects = folderObject.getRepoObjects();
+                        //将非私有目录的查询方案对象排除
+                        excludePublidRepoObj(homeObjects);
+                    }
+                }
+            }
+        }
+        return repositoryObjects;
+    }
+
+    public void excludePublidRepoObj(List<IRepositoryObject> repositoryObjects){
+        Iterator<IRepositoryObject> it = repositoryObjects.iterator();
+        while (it.hasNext()){
+            IRepositoryObject reObj = it.next();
+            if (IRepositoryObject.Type.FOLDER == reObj.getType()){
+                RepositoryFolderObject folderObject = (RepositoryFolderObject) reObj;
+                //对于目录 如果是非'/homes/home:'前缀，就说明为公共目录，排除
+                if (!folderObject.getPath().startsWith("/homes/home:")){
+                    it.remove();
+                }
+            }
+            else {
+                //文件直接排除
+                it.remove();
+            }
+        }
     }
 
 
-    /**
-     * Get the ACL information for a given resource.
-     *
-     * @param file The file object
-     * @return An AclEntry Object.
-     * @summary Get ACL information.
-     */
+        /**
+         * Get the ACL information for a given resource.
+         *
+         * @param file The file object
+         * @return An AclEntry Object.
+         * @summary Get ACL information.
+         */
     @GET
     @Produces({"application/json"})
     @Path("/resource/acl")
@@ -323,8 +370,8 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
             @FormParam("content") String content) {
         String username = sessionService.getAllSessionObjects().get("username").toString();
         List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
-        //先往平台插记录 成功则让其通过 否则 不让其保存
-        if (!updateDataToRqPlatForm(content, file, username,"add")) {
+        //先往平台插记录 成功则让其通过 否则 不让其保存,注 文件夹，和非私有目录下的查询方案也不会同步到平台
+        if (content!=null && file.contains("home:") && !updateDataToRqPlatForm(content, file, username,"add")) {
             return Response.serverError().entity("查询方案保存失败: ( 文件名：" + file + ") 错误原因：无法连接至关联平台！请检查关联平台是否开启！").header("Content-Type","text/plain; charset=utf-8").build();
         }
         String resp = datasourceService.saveFile(content, file, username, roles);

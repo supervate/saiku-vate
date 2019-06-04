@@ -8,7 +8,7 @@
 #   - YAML Lint: https://codebeautify.org/yaml-validator
 #   - YAML Validator: https://yamlvalidator.com/
 # =======================================================================
-VERSION: Saiku-
+VERSION: rqcube-
 LICENSE: null
 BIPLUGIN: false
 BIPLUGIN5: false
