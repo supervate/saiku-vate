@@ -274,7 +274,9 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
             }
             else {
                 //文件直接排除
-                it.remove();
+                if (excludePublic){
+                    it.remove();
+                }
             }
         }
     }
