@@ -449,34 +449,34 @@ var AdminConsole = Backbone.View.extend({
         "<li class='schema'><span class='icon'></span><a href='<%= entry.name%>'><%= entry.name %></a></li>" +
         "<% } ); %>"),
 
-    usertemplate: _.template(" <form><div id='accordion'><h3 class='accordion-toggle' >User Details</h3>" +
+    usertemplate: _.template(" <form><div id='accordion'><h3 class='accordion-toggle' >用户详情</h3>" +
         "<div class='accordion-content default'>"+
-        "<label for='username'>Username:</label> <input class='form-control'  onfocus=\"this.value=''; this.onfocus=null;\" type='text' name='username' value='<% if(user.username) { %><%= user.username %><%} else{ %>Enter Username<%}%>'><br/>" +
-        "<label for='email'>Email address:</label> <input class='form-control' type='text' onfocus=\"this.value=''; this.onfocus=null;\" name='email' value='<% if(user.email) { %><%= user.email %><%} else{ %>Enter Email Address<%}%>'><br/>" +
+        "<label for='username'>用户名(登录名):</label> <input class='form-control'  onfocus=\"this.value=''; this.onfocus=null;\" type='text' name='username' value='<% if(user.username) { %><%= user.username %><%} else{ %>输入用户名(登录名)<%}%>'><br/>" +
+        "<label for='email'>邮箱地址:</label> <input class='form-control' type='text' onfocus=\"this.value=''; this.onfocus=null;\" name='email' value='<% if(user.email) { %><%= user.email %><%} else{ %>输入邮箱地址<%}%>'><br/>" +
         "<div class='clear'></div>" +
         "</div>" +
 
-        "<h3 class='accordion-toggle'>Password</h3>" +
+        "<h3 class='accordion-toggle'>密码</h3>" +
         "<div class='accordion-content'>"+
         //"Current password:<input type='password' value='' name='currpassword'><br/>" +
-        "<label for='newpassword'>Change password:</label><input class='form-control' type='password' value='' name='newpassword'><br/>" +
-        "<label for='newpassword2'>Repeat Password:</label><input class='form-control' type='password' value='' name='newpassword2'><br/>" +
-        "<a href='<%= user.id%>' class='save_password user_button btn btn-default form_button'>Change Password</a><div class='clear'></div>" +
+        "<label for='newpassword'>新密码:</label><input class='form-control' type='password' value='' name='newpassword'><br/>" +
+        "<label for='newpassword2'>确认密码:</label><input class='form-control' type='password' value='' name='newpassword2'><br/>" +
+        "<a href='<%= user.id%>' class='save_password user_button btn btn-default form_button'>修改密码</a><div class='clear'></div>" +
         "</div>" +
 
-        "<h3 class='accordion-toggle'>Roles</h3>" +
+        "<h3 class='accordion-toggle'>角色</h3>" +
         "<div class='accordion-content'>"+
-        "<label for='roleselect'>Existing Roles: </label><select name='roleselect' class='form-control role_select'" +
+        "<label for='roleselect'>已有角色: </label><select name='roleselect' class='form-control role_select'" +
             " multiple>" +
         " <% _.each(user.roles, function(role){%><option><%= role %></option><%});%></select><br/><br/>" +
-        "<a href='<%= user.id%>' class='remove_role form_button btn btn-default  user_button'>Remove selected role</a><br/> " +
-        "<a href='#' class='new_remove_role btn btn-default  form_button user_button hide'>Remove selected role</a><br/><br/> <br/> " +
-        "<label for='role'>Add new role: </label><input class='form-control' type='text' name='role'><br/>" +
-        "<a href='<%= user.id%>' class=' form_button btn btn-default  user_button add_role'>Add role</a>" +
-        "<a href='#' class='new_add_role form_button btn btn-default  user_button hide'>Add role</a><br/></div>" +
-        "<br/><br/><a href='<%= user.id%>' class='remove_user btn btn-danger form_button user_button hide'>Remove User</a> " +
-        "<a href='<%= user.id%>' class='save_user btn btn-default  user_button form_button'>Save Changes</a>" +
-        "<a href='#' class='save_new_user form_button btn btn-default  user_button hide'>Save User</a><div class='clear'>" +
+        "<a href='<%= user.id%>' class='remove_role form_button btn btn-default  user_button'>移除选中的角色</a><br/> " +
+        "<a href='#' class='new_remove_role btn btn-default  form_button user_button hide'>移除选中的角色</a><br/><br/> <br/> " +
+        "<label for='role'>添加新角色: </label><input class='form-control' type='text' name='role'><br/>" +
+        "<a href='<%= user.id%>' class=' form_button btn btn-default  user_button add_role'>添加角色</a>" +
+        "<a href='#' class='new_add_role form_button btn btn-default  user_button hide'>添加角色</a><br/></div>" +
+        "<br/><br/><a href='<%= user.id%>' class='remove_user btn btn-danger form_button user_button hide'>删除用户</a> " +
+        "<a href='<%= user.id%>' class='save_user btn btn-default  user_button form_button'>保存修改</a>" +
+        "<a href='#' class='save_new_user form_button btn btn-default  user_button hide'>保存用户</a><div class='clear'>" +
         "</div></div></form>"),
     datasourcetemplate: _.template(
     	"<form><h3>数据源信息</h3>"+
@@ -645,9 +645,12 @@ var AdminConsole = Backbone.View.extend({
             user.save({}, {
                 data: JSON.stringify(user.attributes), contentType: "application/json"
                 , success: function (e) {
-                    $.notify('User updated successfully', {globalPosition: 'top center', className: 'success'});
-
-                }
+                    // $.notify('User updated successfully', {globalPosition: 'top center', className: 'success'});
+					openLayerConfirmDialog("用户修改成功！");
+                },
+				error: function(data, textStatus, jqXHR) {
+					openLayerConfirmDialog("用户修改失败："+textStatus.responseText);
+				}
             });
         }
 
@@ -668,15 +671,13 @@ var AdminConsole = Backbone.View.extend({
         if ($newtarget.val() == $newtarget2.val()) {
             user.set({password: $newtarget.val()});
             user.save({}, {data: JSON.stringify(user.attributes), contentType: "application/json", success: function(e){
-                $.notify('Password updated successfully', { globalPosition: 'top center', className: 'success' });
+                openLayerMsg('密码更新成功');
                 $newtarget.val("");
                 $newtarget2.val("");
             }});
         }
         else {
-            console.log("validation error");
-            $.notify('Validation Error', { globalPosition: 'top center', className: 'error' });
-
+			openLayerConfirmDialog("两次密码输入不一致！");
         }
     },
     add_role: function (event) {
@@ -786,22 +787,25 @@ var AdminConsole = Backbone.View.extend({
 
             user.set({username: username.val(), email: emailaddress.val(), roles: that.temproles, password: $newtarget.val()});
             this.users.add(user);
+            debugger;
             user.save({}, {data: JSON.stringify(user.attributes), contentType: "application/json", success: function(){
-                that.temproles = [];
+				openLayerMsg("用户添加成功！",1500);
+				that.temproles = [];
                 that.fetch_users();
                 $(that.el).find('.user_info').html("");
-
-
-            }});
+            },
+			error: function(data, textStatus, jqXHR) {
+				openLayerConfirmDialog("用户添加失败："+textStatus.responseText);
+			}});
         }
         else {
-            console.log("validation error");
+            openLayerConfirmDialog("两次密码输入不一致！")
         }
 
     },
     clear_users: function() {
-    $(this.el).find('.inner_users').empty();
-    $(this.el).find('.inner_users').append("<li class='create_user'><strong>添加新用户</strong></li>");
+		$(this.el).find('.inner_users').empty();
+		$(this.el).find('.inner_users').append("<li class='create_user'><strong>添加新用户</strong></li>");
     },
     clear_datasources: function(){
         $(this.el).find('.inner_datasource').empty();
@@ -1113,7 +1117,29 @@ var AdminConsole = Backbone.View.extend({
 
         var ds = this.users.get(path);
         var that = this;
-        ds.destroy({wait:true, success: function(){this.fetch_users();$(that.el).find('.user_info').html("");}});
+		layer.confirm("确认删除该用户？", {
+			btn: ['确定','取消'] //按钮
+		}, function(){
+			ds.destroy({
+				wait: true, success: function () {
+					openLayerMsg("用户删除成功！",1500);
+					that.fetch_users();
+					$(that.el).find('.user_info').html("");
+				},
+				error: function(data, textStatus, jqXHR) {
+					debugger;
+					if (textStatus.statusText == "parsererror" && textStatus.status == 200){
+						openLayerMsg("用户删除成功！",1500);
+						that.fetch_users();
+						$(that.el).find('.user_info').html("");
+					}else {
+						openLayerConfirmDialog("用户删除失败："+textStatus.responseText);
+					}
+				}
+			});
+		},function(){
+			layer.close(confirmIndex);
+		});
     },
     refresh_datasource : function(event){
         event.preventDefault();

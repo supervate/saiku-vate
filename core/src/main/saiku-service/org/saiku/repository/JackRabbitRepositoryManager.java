@@ -50,16 +50,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.jcr.Binary;
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeExistsException;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeTemplate;
@@ -879,15 +870,13 @@ public class JackRabbitRepositoryManager implements IRepositoryManager {
     try {
       n = getFolder(fileUrl);
     } catch (RepositoryException e) {
-      e.printStackTrace();
+      log.error("获取仓库文件失败！",e);
     }
-
     try {
       return new RepositoryFile(n != null ? n.getName() : null, null, null, fileUrl);
-    } catch (RepositoryException e) {
-      e.printStackTrace();
+    } catch (RepositoryException t) {
+      log.error("新建仓库文件对象失败！",t);
     }
-
     return null;
   }
 

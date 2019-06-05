@@ -243,10 +243,11 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                     if (excluedeFileName.contains(folderObject.getPath())) {
                         iterator.remove();
                     }
-                    if ("/homes".equals(folderObject.getPath()) && excludePublic) {
+                    if ("/homes".equals(folderObject.getPath())) {
                         List<IRepositoryObject> homeObjects = folderObject.getRepoObjects();
-                        //将非私有目录的查询方案对象排除
-                        excludePublidRepoObj(homeObjects);
+                        folderObject.setName(folderObject.getName().replace("homes","公共目录"));
+                        //处理homes目录下的其他私有目录，将'home:'转换为'私有目录:'以及是否需要将非私有目录的查询方案对象排除
+                        handlePublidRepoObj(homeObjects,excludePublic);
                     }
                 }
             }
@@ -254,15 +255,21 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
         return repositoryObjects;
     }
 
-    public void excludePublidRepoObj(List<IRepositoryObject> repositoryObjects){
+    public void handlePublidRepoObj(List<IRepositoryObject> repositoryObjects,boolean excludePublic){
         Iterator<IRepositoryObject> it = repositoryObjects.iterator();
         while (it.hasNext()){
             IRepositoryObject reObj = it.next();
             if (IRepositoryObject.Type.FOLDER == reObj.getType()){
                 RepositoryFolderObject folderObject = (RepositoryFolderObject) reObj;
-                //对于目录 如果是非'/homes/home:'前缀，就说明为公共目录，排除
-                if (!folderObject.getPath().startsWith("/homes/home:")){
-                    it.remove();
+                //对于目录 如果是非'/homes/home:'前缀，就说明为公共目录
+                if (folderObject.getPath().startsWith("/homes/home:")){
+                        folderObject.setName(folderObject.getName().replace("home:", "私有目录:"));
+                }
+                else {
+                    if (excludePublic) {
+                        //排除非私有目录
+                        it.remove();
+                    }
                 }
             }
             else {

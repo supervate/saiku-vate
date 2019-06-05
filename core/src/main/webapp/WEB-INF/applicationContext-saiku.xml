@@ -48,6 +48,7 @@
 		<security:intercept-url pattern="/rest/saiku/session*" access="isAnonymous() or isFullyAuthenticated()"/>
 
 		<!--用户同步相应接口开放-->
+		<security:intercept-url pattern="/rest/saiku/admin/allUsers" access="isAnonymous() or isFullyAuthenticated()"/>
 		<security:intercept-url pattern="/rest/saiku/admin/addUsers" access="isAnonymous() or isFullyAuthenticated()"/>
 		<security:intercept-url pattern="/rest/saiku/admin/updateUsers" access="isAnonymous() or isFullyAuthenticated()"/>
 		<security:intercept-url pattern="/rest/saiku/admin/delUsers" access="isAnonymous() or isFullyAuthenticated()"/>

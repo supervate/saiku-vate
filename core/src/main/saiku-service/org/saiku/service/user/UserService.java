@@ -2,6 +2,8 @@ package org.saiku.service.user;
 
 import org.saiku.database.JdbcUserDAO;
 import org.saiku.database.dto.SaikuUser;
+import org.saiku.datasources.connection.RepositoryFile;
+import org.saiku.repository.IRepositoryObject;
 import org.saiku.service.ISessionService;
 import org.saiku.service.datasource.DatasourceService;
 import org.saiku.service.datasource.IDatasourceManager;
@@ -9,6 +11,7 @@ import org.saiku.service.datasource.IDatasourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.PathNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,14 +108,18 @@ public class UserService implements IUserManager, Serializable {
 
         uDAO.deleteUser(userId);
 
-        iDatasourceManager.deleteFolder("homes/" + u.getUsername());
+        iDatasourceManager.deleteFolder("homes/home:" + u.getUsername());
 
     }
 
     public SaikuUser updateUser(SaikuUser u, boolean updatepassword) {
         SaikuUser user = uDAO.updateUser(u, updatepassword);
         uDAO.updateRoles(u);
-
+        //更新用户时，检测用户私有目录是否还存在，不存在则创建
+        RepositoryFile repositoryFile = iDatasourceManager.getFile("/homes/home:" + u.getUsername());
+        if (repositoryFile == null || repositoryFile.getFileName() == null){
+            iDatasourceManager.createUser(u.getUsername());
+        }
         return user;
 
     }

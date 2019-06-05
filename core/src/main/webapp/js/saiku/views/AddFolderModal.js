@@ -61,7 +61,7 @@ var AddFolderModal = Modal.extend({
         
         var name = $(this.el).find('input[name="name"]').val();
         if (name.startsWith("home:")) {
-        	openLayerConfirmDialog("请勿使用'home:'作为文件夹的名称开头(该前缀为系统关键字)！");
+        	openLayerConfirmDialog("请勿使用'home:'或者'私有目录:'作为文件夹的名称开头(该前缀为系统关键字)！");
         	return false;
 		}
         var file = this.path + name;

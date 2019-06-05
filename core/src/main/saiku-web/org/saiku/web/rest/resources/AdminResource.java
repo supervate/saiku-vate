@@ -708,7 +708,7 @@ public class AdminResource {
                 userService.removeUser(deleteUserIds.get(i)+"");
             }
         }
-        return Response.ok().build();
+        return Response.ok("删除成功").build();
     }
 
     /**
@@ -721,11 +721,13 @@ public class AdminResource {
     @Produces( {"application/json"})
     @Path("/users/{username}")
     public Response removeUser(@PathParam("username") String username,@FormParam("actk") String actk) {
-        if(!userService.isAdmin() && !isAccessAble(actk)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!isAccessAble(actk)){
+            if(!userService.isAdmin()){
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
         }
         userService.removeUser(username);
-        return Response.ok().build();
+        return Response.ok("删除成功！").build();
     }
 
     /**
