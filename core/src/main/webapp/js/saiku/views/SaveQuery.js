@@ -15,7 +15,7 @@
  */
 
 /**
- * fixme by vate 该类是用来处理查询方案保存
+ * fixme by vate 查询方案：保存
  * The save query dialog
  */
 var SaveQuery = Modal.extend({

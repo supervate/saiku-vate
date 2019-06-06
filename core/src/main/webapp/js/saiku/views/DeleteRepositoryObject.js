@@ -16,7 +16,7 @@
  
 
 /**
- * fixme by vate 这个类对应仓库界面的文件删除
+ * fixme by vate 仓库界面：文件删除
  * The delete query confirmation dialog
  */
 var DeleteRepositoryObject = Modal.extend({
@@ -29,6 +29,7 @@ var DeleteRepositoryObject = Modal.extend({
     
     initialize: function(args) {
         this.options.title = "Confirm deletion";
+        this.allQuerys = args.allQuerys;
         this.query = args.query;
         this.success = args.success;
         this.message = '<span class="i18n">Are you sure you want to delete </span>'+'<span>' + this.query.get('name') + '?</span>';
@@ -37,28 +38,42 @@ var DeleteRepositoryObject = Modal.extend({
     del: function() {
         this.query.set("id", _.uniqueId("query_"));
 		this.query.id = _.uniqueId("query_");
+		var that = this;
 		try {
-			this.query.url = this.query.url() + "?file=" + encodeURIComponent(this.query.get('file'));
+			if (this.query.attributes.type == "FOLDER") {
+				var childs = new Array();
+				for (path in this.allQuerys) {
+					if (path.startsWith(that.query.get('file'))) {
+						childs.push(path);
+					}
+				}
+				this.query.url = this.query.url() + "?file=" + encodeURIComponent(this.query.get('file')) + "&objType=folder";
+			}else {
+				this.query.url = this.query.url() + "?file=" + encodeURIComponent(this.query.get('file')) + "&objType=file";
+			}
 		}catch (e) {
 		}
 
 		var layerLoadingIndex = layer.msg("正在删除，请稍后...",{time:10000*1000, icon: 16,shade: 0.01});
 		var self = this;
-		this.query.destroy({
-            success: function (data, textStatus, jqXHR) {
-				layer.close(layerLoadingIndex);
-				self.success(data, textStatus, jqXHR);
+		$.ajax({
+			url: Settings.REST_URL + this.query.url,
+			type: 'DELETE',
+			data: {
+				childs:childs == null? null:childs.join(",")
 			},
-            dataType: "text",
-            error: function (data, textStatus, jqXHR) {
+			success: function (data) {
 				layer.close(layerLoadingIndex);
-				self.error(data, textStatus, jqXHR)
+				self.success(data);
 			},
-            wait:true
-        });
+			error: function (data) {
+				layer.close(layerLoadingIndex);
+				self.error(data)
+			}
+		});
         this.close();
     },
-	error: function(data, textStatus, jqXHR) {
-		openLayerConfirmDialog(textStatus.responseText);
+	error: function(data) {
+		openLayerConfirmDialog(data.responseText);
 	}
 });

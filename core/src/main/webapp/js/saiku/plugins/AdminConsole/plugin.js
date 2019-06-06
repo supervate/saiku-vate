@@ -265,7 +265,7 @@ var AdminConsole = Backbone.View.extend({
 			"<% if(Settings.SHOW_DATASOURCE_MANAGEMENT) { %>"+
             "<li><strong>数据源管理</strong></li>" +
             "<ul class='dslist'><strong>数据源列表</strong>"+
-            "<ul class='inner_datasource'><li class='create_datasource'>Add Data Source</li></ul></ul>" +
+            "<ul class='inner_datasource'><li class='create_datasource'>添加数据源</li></ul></ul>" +
             "<ul class='dslist'><strong>'多维定义'列表</strong>"+
 			"<ul class='inner_schema'><li class='create_schema'>Add Schema</li></ul></ul>" +
 			"<% } %>"+
@@ -787,7 +787,6 @@ var AdminConsole = Backbone.View.extend({
 
             user.set({username: username.val(), email: emailaddress.val(), roles: that.temproles, password: $newtarget.val()});
             this.users.add(user);
-            debugger;
             user.save({}, {data: JSON.stringify(user.attributes), contentType: "application/json", success: function(){
 				openLayerMsg("用户添加成功！",1500);
 				that.temproles = [];
@@ -795,7 +794,13 @@ var AdminConsole = Backbone.View.extend({
                 $(that.el).find('.user_info').html("");
             },
 			error: function(data, textStatus, jqXHR) {
-				openLayerConfirmDialog("用户添加失败："+textStatus.responseText);
+				if (textStatus.statusText == "parsererror" && textStatus.status == 200){
+					openLayerMsg("用户添加成功！",1500);
+					that.fetch_users();
+					$(that.el).find('.user_info').html("");
+				}else {
+					openLayerConfirmDialog("用户添加失败："+textStatus.responseText);
+				}
 			}});
         }
         else {
@@ -1127,7 +1132,6 @@ var AdminConsole = Backbone.View.extend({
 					$(that.el).find('.user_info').html("");
 				},
 				error: function(data, textStatus, jqXHR) {
-					debugger;
 					if (textStatus.statusText == "parsererror" && textStatus.status == 200){
 						openLayerMsg("用户删除成功！",1500);
 						that.fetch_users();

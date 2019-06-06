@@ -42,8 +42,7 @@ var Toolbar = Backbone.View.extend({
         _.extend(this, Backbone.Events);
         _.bindAll(this, "call");
         var self = this;
-        //fixme by vate
-        // 在此处可以设定Logo 暂时先选择将其屏蔽 如果要打开 记得底下两个注释的都要打开哦
+        //fixme by vate 在此处可以设定Logo 暂时先选择将其屏蔽 如果要打开 记得底下两个注释的都要打开哦
         if(Settings.LOGO){
             // self.logo = "<h1 id='logo_override'>"+
             //     "<img src='"+Settings.LOGO+"'/>"+
@@ -70,8 +69,7 @@ var Toolbar = Backbone.View.extend({
         return this;
     },
 
-	/*fixme by vate
-	*  隐藏掉页面的工具栏*/
+	/*fixme by vate 隐藏掉页面的工具栏*/
 	hideToolBar: function(){
 		$("#toolbar").hide();
 	},

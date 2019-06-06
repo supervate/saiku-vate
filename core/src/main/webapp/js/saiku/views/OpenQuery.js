@@ -15,8 +15,7 @@
  */
 
 /**
- * fixme by vate
- * 这个是仓库列表页面
+ * fixme by vate 仓库界面：主界面
  * The open query tab (Repository viewer)
  */
 var OpenQuery = Backbone.View.extend({
@@ -215,7 +214,8 @@ var OpenQuery = Backbone.View.extend({
         $(this.el).find('.cancel_search').hide();
 
     },
-    view_query: function(event) {
+	//fixme by vate 仓库界面：点击文件时触发
+	view_query: function(event) {
         event.preventDefault( );
         var $currentTarget = $( event.currentTarget );
         var $target = $currentTarget.find('a');
@@ -271,7 +271,7 @@ var OpenQuery = Backbone.View.extend({
 
         return false;
     },
-
+	//fixme by vate 仓库界面：点击文件夹时触发
     view_folder: function( event ) {
         var $target = $( event.currentTarget ).children('div').children('a');
         var path = $target.attr('href').replace('#', '');
@@ -283,10 +283,18 @@ var OpenQuery = Backbone.View.extend({
         $( this.el ).find( '.for_folder' ).addClass( 'hide' );
 
         if (typeof folder.acl != "undefined" && _.indexOf(folder.acl, "WRITE") > -1) {
-            $( this.el ).find( '.for_folder .delete' ).parent().removeClass( 'hide' );
-            $( this.el ).find( '.add_folder' ).parent().removeClass( 'hide' );
-        }
-        if (typeof folder.acl != "undefined" && _.indexOf(folder.acl, "GRANT") > -1) {
+        	if (Saiku.session.isAdmin || !folder.name.startsWith("私有目录:")) {
+        		//只有管理员可以删除用户私有目录，其他用户不可以
+            	$( this.el ).find( '.for_folder .delete' ).parent().removeClass( 'hide' );
+			}
+			$( this.el ).find( '.add_folder' ).parent().removeClass( 'hide' );
+		}
+        if (folder.path == "/homes") {
+        	//所有人都可以在公共目录下创建新目录
+			$( this.el ).find( '.add_folder' ).parent().removeClass( 'hide' );
+		}
+
+		if (typeof folder.acl != "undefined" && _.indexOf(folder.acl, "GRANT") > -1) {
             $( this.el ).find( '.for_folder .edit_permissions' ).parent().removeClass( 'hide' );
         }
 
@@ -321,7 +329,7 @@ var OpenQuery = Backbone.View.extend({
 
         (new AddFolderModal({
             path: path,
-            success: this.clear_query
+            success: this.clear_query_addFolder
         })).render().open();
 
         return false;
@@ -457,8 +465,9 @@ var OpenQuery = Backbone.View.extend({
 
     delete_repoObject: function(event) {
         (new DeleteRepositoryObject({
-            query: this.selected_query,
-            success: this.clear_query
+			allQuerys: this.queries,
+			query: this.selected_query,
+            success: this.clear_query_del
         })).render().open();
 
         return false;
@@ -467,7 +476,7 @@ var OpenQuery = Backbone.View.extend({
     move_repoObject: function(event) {
         (new MoveRepositoryObject({
             query: this.selected_query,
-            success: this.clear_query
+            success: this.clear_query_move
         })).render().open();
 
         return false;
@@ -486,11 +495,40 @@ var OpenQuery = Backbone.View.extend({
         })).open();
     },
 
+    clear_query_addFolder: function() {
+    	openLayerMsg("新建成功！",1500);
+		var tab = Saiku.tabs.getSelectedTab();
+		//其实就是当前对象
+		var currentPageObj = tab.content;
+        $(currentPageObj.el).find('.workspace_toolbar').addClass('hide');
+        $(currentPageObj.el).find('.workspace_results').html('');
+		currentPageObj.fetch_queries();
+    },
+    clear_query_del: function() {
+		openLayerMsg("删除成功！",1500);
+		var tab = Saiku.tabs.getSelectedTab();
+		//其实就是当前对象
+		var currentPageObj = tab.content;
+		$(currentPageObj.el).find('.workspace_toolbar').addClass('hide');
+        $(currentPageObj.el).find('.workspace_results').html('');
+		currentPageObj.fetch_queries();
+    },
+    clear_query_move: function() {
+		openLayerMsg("移动成功！",1500);
+		var tab = Saiku.tabs.getSelectedTab();
+		//其实就是当前对象
+		var currentPageObj = tab.content;
+		$(currentPageObj.el).find('.workspace_toolbar').addClass('hide');
+        $(currentPageObj.el).find('.workspace_results').html('');
+		currentPageObj.fetch_queries();
+    },
     clear_query: function() {
-    	layer.msg("查询方案删除成功!",{time:1000});
-        $(this.el).find('.workspace_toolbar').addClass('hide');
-        $(this.el).find('.workspace_results').html('');
-        this.fetch_queries();
+		var tab = Saiku.tabs.getSelectedTab();
+		//其实就是当前对象
+		var currentPageObj = tab.content;
+        $(currentPageObj.el).find('.workspace_toolbar').addClass('hide');
+        $(currentPageObj.el).find('.workspace_results').html('');
+		currentPageObj.fetch_queries();
     },
 
     adjust: function() {

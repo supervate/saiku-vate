@@ -15,11 +15,10 @@
  */
  
 /**
- * fixme by vate 这个是仓库界面 新建文件夹
+ * fixme by vate 仓库界面：新建文件夹
  * The "add a folder" dialog
  */
 var AddFolderModal = Modal.extend({
-
     type: "save",
     closeText: "Save",
 
@@ -55,7 +54,6 @@ var AddFolderModal = Modal.extend({
     },
 
     save: function( event ) {
-    	debugger;
         event.preventDefault( );
         var self = this;
         
@@ -65,6 +63,13 @@ var AddFolderModal = Modal.extend({
         	return false;
 		}
         var file = this.path + name;
+        //fixme by vate 新建文件夹，如果非homes子目录，则自动填充上/homes路径，保证所有目录都在homes下
+        if(!file.startsWith("/homes")){
+        	if (!file.startsWith("/")){
+        		file = "/" + file;
+			}
+			file = "/homes" + file;
+		}
         (new SavedQuery( { file: file , name: name} ) ).save({}, { 
             success: self.success,
             dataType: "text",

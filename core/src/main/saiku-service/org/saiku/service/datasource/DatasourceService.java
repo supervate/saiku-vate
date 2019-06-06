@@ -17,6 +17,7 @@ package org.saiku.service.datasource;
 
 import org.saiku.database.dto.MondrianSchema;
 import org.saiku.datasources.connection.IConnectionManager;
+import org.saiku.datasources.connection.RepositoryFile;
 import org.saiku.datasources.datasource.SaikuDatasource;
 import org.saiku.repository.AclEntry;
 import org.saiku.repository.IRepositoryObject;
@@ -132,7 +133,9 @@ public class DatasourceService implements Serializable {
     public String moveFile(String source, String target, String name, List<String> roles) { return datasources.moveFile(
         source, target, name, roles); }
 
-
+    public RepositoryFile getFile(String path) {
+        return datasources.getFile(path);
+    }
     public List<IRepositoryObject> getFiles(List<String> type, String username, List<String> roles) {
       return datasources.getFiles(type, username, roles);
   }

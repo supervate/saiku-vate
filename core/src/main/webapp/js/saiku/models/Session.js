@@ -213,19 +213,6 @@ var Session = Backbone.Model.extend({
     },
 
     url: function() {
-
         return "session";
-    },
+    }
 });
-//FIXME by vate
-function resoulverActk(){
-	jQuery.ajax({
-		async: false,
-		type: 'GET',
-		url: Settings.REST_URL+"/resloverActk",
-		data: null,
-		success: function(data) {
-
-		}
-	});
-}

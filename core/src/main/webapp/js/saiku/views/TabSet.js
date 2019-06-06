@@ -27,8 +27,7 @@ var TabSet = Backbone.View.extend({
 		this.pager = new TabPager({ tabset: this });
 		return this;
 	},
-	/*fixme by vate
-	*  隐藏掉页面的tabs栏*/
+	/*fixme by vate 隐藏掉页面的tabs栏*/
 	hideTabBar: function(){
 		$("#header .tabs").hide();
 	},
@@ -172,5 +171,11 @@ var TabSet = Backbone.View.extend({
 		// Unblock UI and restore functionality
 		Saiku.ui.unblock();
 		return false;
+	},
+	getSelectedTab: function () {
+		var tab_a = $(".tabs .selected a");
+		var href = tab_a[0].href;
+		var tabId = href.substr(href.indexOf("#")+1,href.length);
+		return this.find(tabId);
 	}
 });

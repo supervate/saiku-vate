@@ -31,6 +31,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
 
+import org.saiku.datasources.connection.RepositoryFile;
 import org.saiku.repository.AclEntry;
 import org.saiku.repository.IRepositoryObject;
 import org.saiku.repository.RepositoryFolderObject;
@@ -182,7 +183,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
     }
 
     /*
-     * fixme by vate 自定义接口，该接口的不受rqcube权限系统控制，单独使用actk来识别用户
+     * fixme by vate 自定义接口，该接口不受rqcube权限系统控制，单独使用actk来识别用户
      */
     @POST
     @Path("byactk")
@@ -396,7 +397,14 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
 		*/
     }
 
-    public boolean updateDataToRqPlatForm(String content, String file, String username, String option) {
+    /**
+     * @param content
+     * @param files 文件列表(注意：如果是添加操作，则只允许放一个文件！！只有在删除操作时，多个文件才有效)
+     * @param username
+     * @param option add 添加 delete 删除
+     * @return
+     */
+    public boolean updateDataToRqPlatForm(String content, String files, String username, String option) {
         try {
             if (StringUtils.isBlank(rqServerUrl)) {
                 //如果rqServerUrl填为空 则不需要与平台交互
@@ -407,7 +415,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                     HashMap<String, Object> paramMap = new HashMap<>();
                     paramMap.put("loginName", username);
                     paramMap.put("content", content);
-                    paramMap.put("file", file);
+                    paramMap.put("file", files);
                     paramMap.put("timestamp", new Date().getTime());
                     paramMap.put("actk", encryptAndDecryptUtil.encryptContentForRqpanda(AdminResource.accessAccount+","+AdminResource.accessPwd));
                     String result = HttpUtil.post(rqServerUrl + addQueryApi + "?_=" + new Date().getTime(), paramMap);
@@ -422,7 +430,7 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
                 }
                 case "delete": {
                     HashMap<String, Object> paramMap = new HashMap<>();
-                    paramMap.put("file", file);
+                    paramMap.put("paths", files);
                     paramMap.put("actk", encryptAndDecryptUtil.encryptContentForRqpanda(AdminResource.accessAccount+","+AdminResource.accessPwd));
                     String result = HttpUtil.post(rqServerUrl + deleteQueryApi, paramMap);
                     JSONObject resultObj = JSONUtil.parseObj(result);
@@ -439,11 +447,11 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
             }
         }
         catch (HttpException c){
-            log.error("调用平台接口，连接失败！查询文件名为:{} 错误消息:{}",file,c.getMessage());
+            log.error("调用平台接口，连接失败！查询文件名为:{} 错误消息:{}",files,c.getMessage());
             return false;
         }
         catch (JSONException c){
-            log.error(String.format("调用平台接口，返回数据异常(在连接至nginx时连接失败会返回html数据，会导致该问题，很大可能是由于无法联通关联平台造成)！查询文件名为:{} 错误消息:{}",file,c.getMessage() ),c);
+            log.error(String.format("调用平台接口，返回数据异常(在连接至nginx时连接失败会返回html数据，会导致该问题，很大可能是由于无法联通关联平台造成)！查询文件名为:{} 错误消息:{}",files,c.getMessage() ),c);
             return false;
         }
         catch (Throwable throwable){
@@ -456,23 +464,32 @@ public class BasicRepositoryResource2 implements ISaikuRepository {
      * Delete a resource from the repository
      *
      * @param file - The name of the repository file to load.
+     * @param objType -  folder 或者 file
      * @return a response status 200.
      */
     @DELETE
     @Path("/resource")
-    public Response deleteResource(
-            @QueryParam("file") String file) {
-            String username = sessionService.getAllSessionObjects().get("username").toString();
-            List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
+    public Response deleteResource(@QueryParam("file") String file, @QueryParam("objType") String objType,@FormParam("childs") String childs) {
+        //如果是目录，files将代表目录内的所有文件,否则就只是该文件
+        String username = sessionService.getAllSessionObjects().get("username").toString();
+        List<String> roles = (List<String>) sessionService.getAllSessionObjects().get("roles");
 
-            //先往平台删除记录 成功则让其通过 否则 不让其删除
-            if (!updateDataToRqPlatForm(null, file, username,"delete")) {
+        //先往平台删除记录 成功则让其通过 否则 不让其删除 文件夹和文件的删除要区分处理
+        if ("folder".equals(objType)){
+            if (StringUtils.isNotBlank(childs)) {
+                if (!updateDataToRqPlatForm(null, childs, username, "delete")) {
+                    return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + "), 无法连接至关联平台！请检查关联平台是否开启！").type("text/plain").build();
+                }
+            }
+        }else {
+            if (!updateDataToRqPlatForm(null, file, username, "delete")) {
                 return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + "), 无法连接至关联平台！请检查关联平台是否开启！").type("text/plain").build();
             }
-            String resp = datasourceService.removeFile(file, username, roles);
-            if (resp.equals("Remove Okay")) {
-                return Response.ok().build();
-            } else {
+        }
+        String resp = datasourceService.removeFile(file, username, roles);
+        if (resp.equals("Remove Okay")) {
+            return Response.ok().build();
+        } else {
             return Response.serverError().entity("查询方案删除失败: ( 文件名: " + file + ")！").type("text/plain").build();
         }
 

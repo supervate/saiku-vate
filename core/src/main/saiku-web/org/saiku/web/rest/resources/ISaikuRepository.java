@@ -54,6 +54,6 @@ public interface ISaikuRepository {
 	 */
 	@DELETE
 	@Path("/resource")
-	Response deleteResource(@QueryParam("file") String file);
+	Response deleteResource(@QueryParam("file") String file,@QueryParam("objType") String objType,@FormParam("childs") String childs);
 
 }
