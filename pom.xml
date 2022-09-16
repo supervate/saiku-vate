@@ -29,7 +29,7 @@
     <tomcat.version>apache-tomcat-9.0.8</tomcat.version>
     <tomcat.source>target/stage/tomcat/</tomcat.source>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    <calcite.version>0.9.2-incubating-SNAPSHOT</calcite.version>
+    <calcite.version>1.32.0</calcite.version>
     <pentaho.libs.version>TRUNK-SNAPSHOT</pentaho.libs.version>
     <pentaho.platform.version>5.0.0</pentaho.platform.version>
     <serenity.version>1.0.58</serenity.version>
