@@ -434,7 +434,7 @@
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
-            <version>3.6.2</version>
+            <version>3.12.13</version>
         </dependency>
 
         <!-- Google Simple JSON for easy plain parsing -->
